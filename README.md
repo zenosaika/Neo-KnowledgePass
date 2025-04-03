@@ -27,5 +27,5 @@ docker run \
 
 ### Run FastAPI
 ```
-uvicorn main:app --reload --port 8081
+fastapi dev main.py --port 8081
 ```

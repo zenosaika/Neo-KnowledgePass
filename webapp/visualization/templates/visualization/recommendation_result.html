@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Pass - Results</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <style>
+        /* --- Base Styles --- */
+        body {
+            background-color: #111;
+            color: #eee;
+            font-family: sans-serif;
+            margin: 0;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* --- Particles Background --- */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Behind content */
+        }
+
+        /* --- Main Layout Container --- */
+        .space-background {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%;
+            padding: 40px 20px; /* Consistent padding */
+            box-sizing: border-box;
+            z-index: 1; /* Ensure content is above particles */
+        }
+
+        /* --- Title --- */
+        .page-title {
+            font-size: 3rem; /* Equivalent to text-5xl */
+             line-height: 1.1;
+            font-weight: 700; /* bold */
+            margin-bottom: 1rem; /* mb-4 */
+            color: transparent; /* Required for bg-clip-text */
+            background-clip: text;
+            -webkit-background-clip: text; /* Safari compatibility */
+            background-image: linear-gradient(to right, #a78bfa, #f472b6, #ef4444); /* from-purple-400 via-pink-500 to-red-500 */
+             /* Optional: Add pulse animation if desired */
+             /* animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; */
+        }
+         @keyframes pulse {
+             50% { opacity: .5; }
+         }
+         .page-subtitle {
+             font-size: 1.125rem; /* text-lg */
+             color: #9ca3af; /* text-gray-400 */
+             margin-bottom: 2.5rem; /* mb-10 */
+             text-align: center;
+         }
+
+        /* --- Leaderboard Styles --- */
+        .leaderboard-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; /* Align items to bottom for podium effect */
+            gap: 1.5rem;
+            width: 90%;
+            max-width: 1000px;
+            margin-bottom: 3rem;
+            flex-wrap: wrap; /* Allow wrapping */
+        }
+        .leaderboard-item {
+            background: linear-gradient(145deg, rgba(40, 48, 64, 0.8), rgba(25, 30, 40, 0.8));
+            border: 1px solid; /* Set per rank */
+            border-radius: 10px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            color: #e5e7eb; /* gray-200 */
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+            flex-basis: 250px;
+            min-width: 220px;
+        }
+        .leaderboard-item:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+        }
+        .leaderboard-item .rank-badge {
+            font-size: 2rem; font-weight: bold; line-height: 1; margin-bottom: 0.75rem;
+            width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; border: 2px solid; background-color: rgba(0, 0, 0, 0.3);
+        }
+        .leaderboard-item .internship-title { font-size: 1.1rem; font-weight: 600; color: #fff; margin-bottom: 0.25rem; line-height: 1.3; }
+        .leaderboard-item .company-name { font-size: 0.9rem; color: #a5b4fc; margin-bottom: 0.75rem; }
+        .leaderboard-item .score-display { font-size: 1rem; font-weight: 500; color: #6ee7b7; margin-top: auto; padding-top: 0.5rem; }
+        .leaderboard-item .score-display strong { font-weight: 700; color: #a7f3d0; }
+        /* Rank-specific styling */
+        .rank-1 { border-color: #fde047; box-shadow: 0 0 25px rgba(253, 224, 71, 0.4); min-height: 240px; order: 2; }
+        .rank-1 .rank-badge { color: #fde047; border-color: #facc15; }
+        .rank-1:hover { box-shadow: 0 12px 35px rgba(253, 224, 71, 0.6); }
+        .rank-2 { border-color: #e5e7eb; box-shadow: 0 0 20px rgba(229, 231, 235, 0.3); min-height: 210px; order: 1; }
+        .rank-2 .rank-badge { color: #e5e7eb; border-color: #d1d5db; }
+        .rank-2:hover { box-shadow: 0 12px 30px rgba(229, 231, 235, 0.5); }
+        .rank-3 { border-color: #fca5a5; box-shadow: 0 0 15px rgba(252, 165, 165, 0.3); min-height: 210px; order: 3; }
+        .rank-3 .rank-badge { color: #fca5a5; border-color: #f87171; }
+        .rank-3:hover { box-shadow: 0 12px 30px rgba(252, 165, 165, 0.5); }
+        /* Leaderboard Responsive */
+        @media (max-width: 768px) {
+            .leaderboard-container { flex-direction: column; align-items: center; gap: 1rem; }
+            .leaderboard-item { flex-basis: auto; width: 80%; max-width: 400px; min-height: auto; order: initial !important; padding: 1rem; }
+            .rank-1, .rank-2, .rank-3 { min-height: auto; }
+        }
+
+        /* --- Main Content Area (Below Leaderboard) --- */
+        .main-content-area {
+            width: 90%;
+            max-width: 1400px;
+            margin-top: 2rem;
+            background-color: rgba(31, 41, 55, 0.7); /* bg-gray-800/70 */
+            padding: 2rem;
+            border-radius: 12px; /* rounded-xl */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* border-white/10 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem; /* Space between chart area and bottom row */
+        }
+
+        /* --- Charts Container --- */
+        .charts-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        /* Styling for individual chart/accordion containers */
+        .sankey-container {
+            width: 100%;
+            position: relative;
+            border-radius: 12px;
+            background-color: rgba(20, 20, 20, 0.6); /* Darker bg */
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem; /* Space below each item */
+            overflow: hidden; /* Contain elements */
+        }
+        /* Titles inside containers (used for overview chart) */
+        .sankey-container h2 {
+            color: #e5e7eb; /* gray-200 */
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1.5rem;
+        }
+
+        /* Specific style for the always-visible overview chart */
+        .overview-chart-container {
+            border-left: 4px solid #10b981; /* Emerald-500 highlight */
+            background-color: rgba(25, 25, 30, 0.7); /* Slightly different bg */
+        }
+        .overview-chart-container .sankey-chart-div {
+            padding: 1.5rem; /* Padding directly around the overview chart */
+        }
+        .sankey-chart-div {
+            width: 100%;
+            height: 600px; /* Default height for detailed charts */
+        }
+        #sankey_chart_0 {
+            height: 1000px; /* Specific height for overview chart */
+        }
+
+        /* --- Accordion Styles --- */
+        .accordion-toggle {
+            background-color: transparent;
+            color: #c7d2fe; /* Indigo-200 */
+            padding: 1rem 1.5rem;
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.1); /* Separator line */
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            text-align: left;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+        /* Remove top border for the very first accordion item if needed */
+        /* .accordion-item:first-of-type .accordion-toggle { border-top: none; } */
+        .accordion-toggle:hover {
+            background-color: rgba(99, 102, 241, 0.1); /* Indigo-500/10% */
+            color: #fff;
+        }
+        .accordion-toggle .indicator {
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            display: inline-block;
+            font-size: 1.4em;
+            line-height: 1;
+            color: #818cf8; /* Indigo-400 */
+        }
+        .accordion-toggle.active .indicator {
+            transform: rotate(180deg);
+            color: #a7f3d0; /* Emerald-200 */
+        }
+
+        /* Style for the content area that holds the chart */
+        .detailed-chart-content {
+            padding: 1.5rem;
+            background-color: rgba(15, 15, 15, 0.4); /* Slightly darker bg for content */
+             /* transition: opacity 0.4s ease-in-out; */ /* Optional fade */
+        }
+        /* CSS class to hide content */
+        .hidden {
+            display: none;
+        }
+
+        /* --- Bottom Row Styles --- */
+        .bottom-row {
+            display: flex;
+            flex-direction: column; /* Stack on small screens */
+            gap: 2rem;
+            width: 100%;
+        }
+        @media (min-width: 1024px) { /* Side-by-side on large screens */
+            .bottom-row { flex-direction: row; }
+        }
+        .content-box { /* Shared style for left/right boxes */
+            background-color: rgba(31, 41, 55, 0.7); /* Match main area bg */
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            color: #cbd5e1; /* slate-300 */
+        }
+        .left-box { width: 100%; }
+        @media (min-width: 1024px) { .left-box { width: 40%; } }
+        .right-box {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem; /* Space between items inside */
+        }
+        @media (min-width: 1024px) { .right-box { width: 60%; } }
+
+        /* Styling for nested info boxes (jobs, summary, suggestions) */
+        .info-box {
+            background-color: rgba(20, 20, 20, 0.6); /* Match chart container bg */
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .content-box h2 { /* Titles within content boxes */
+             font-size: 1.5rem; /* text-2xl */
+             font-weight: 600; /* semibold */
+             color: #f3f4f6; /* gray-100 */
+             margin-bottom: 1rem; /* mb-4 */
+        }
+        .info-box p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #cbd5e1; /* slate-300 */
+        }
+        .info-box strong {
+            color: #eee; /* Brighter white */
+            font-weight: 600;
+        }
+        .info-box a { /* Style links within job descriptions */
+             color: #818cf8; /* indigo-400 */
+             text-decoration: underline;
+             text-decoration-color: #6366f1; /* indigo-500 */
+        }
+         .info-box a:hover {
+             color: #a5b4fc; /* indigo-300 */
+             text-decoration-color: #818cf8;
+         }
+
+        /* --- Button Styles --- */
+        .action-button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            border-radius: 8px; /* rounded-lg */
+            font-weight: 600; /* font-semibold */
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            border: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-decoration: none; /* Remove underline from links styled as buttons */
+        }
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .action-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5); /* Focus ring like indigo */
+        }
+        /* Export button - primary style */
+        .export-button {
+            background-image: linear-gradient(to right, #10b981, #0d9488); /* Emerald to Teal gradient */
+            color: white;
+            margin-top: 1rem;
+            align-self: flex-start; /* Align left within its container */
+        }
+        .export-button:hover {
+            background-image: linear-gradient(to right, #0f766e, #115e59); /* Darker gradient */
+        }
+        /* Back button - secondary style */
+        .back-button {
+            background-color: #6366f1; /* Indigo-500 */
+            color: white;
+            margin-top: 2.5rem; /* Space above */
+        }
+        .back-button:hover {
+            background-color: #4f46e5; /* Darker indigo */
+        }
+
+        /* Utility class */
+        .text-red-400 { color: #f87171; } /* For errors */
+
+    </style>
+</head>
+
+<body>
+    <nav class="navbar sticky top-0 z-20 w-full bg-gray-900/80 backdrop-blur-md shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="/" class="text-white font-bold text-xl hover:text-indigo-300 transition duration-200">
+                        Knowledge Pass
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/" class="bg-indigo-600/80 text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Job Recommend</a>
+                        <a href="/learning_path_home" class="text-gray-300 hover:bg-gray-700/50 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200">Learning Path</a>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="/" class="bg-indigo-600/80 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Home</a>
+                <a href="/learning_path_home" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Learning Path</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div id="particles-js"></div>
+
+    <div class="space-background">
+
+        <h1 class="page-title">Your Top Matches</h1>
+        <p class="page-subtitle">Based on your profile, these are your leading internship opportunities:</p>
+
+        {% if top_internships %}
+        <div class="leaderboard-container">
+             {% for internship in top_internships %}
+                 <div class="leaderboard-item rank-{{ internship.rank }}">
+                     <div class="rank-badge"><span>{{ internship.rank }}</span></div>
+                     <h3 class="internship-title">{{ internship.title|default:"N/A" }}</h3>
+                     <p class="company-name">{{ internship.company|default:"Company Info Unavailable" }}</p>
+                     <div class="score-display">Match Score: <strong>{{ internship.score|floatformat:0|default:"--" }}</strong></div>
+                 </div>
+             {% endfor %}
+        </div>
+        {% else %}
+         <div class="text-center text-gray-500 my-8">Top internship data not available.</div>
+        {% endif %}
+
+        <div class="main-content-area">
+
+            <div class="charts-container">
+                {% if sankey_datas %}
+                    {% for chart_data_json in sankey_datas %}
+                        {% if forloop.first %}
+                            <div class="sankey-container overview-chart-container">
+                                <h2>Overview: Profile to Roles</h2> {# Add a relevant title #}
+                                <div id="sankey_chart_0" class="sankey-chart-div"></div>
+                            </div>
+                        {% else %}
+                             <div class="sankey-container accordion-item">
+                                 <button type="button" class="accordion-toggle" aria-expanded="false">
+                                     <span>Detailed View: Chart {{ forloop.counter }}</span> {# Or use a more descriptive title if available #}
+                                     <span class="indicator">▼</span> </button>
+                                 <div class="detailed-chart-content hidden">
+                                     <div id="sankey_chart_{{ forloop.counter0 }}" class="sankey-chart-div"></div>
+                                 </div>
+                             </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <p class="text-gray-400 p-4 text-center">No Sankey data available to display.</p>
+                {% endif %}
+            </div>
+
+            <div class="bottom-row">
+                <div class="left-box content-box">
+                    <h2>Analysis Overview</h2>
+                    <p class="text-gray-300">
+                        The first chart provides an overview mapping your profile attributes (courses, skills) to potential internship roles. The thickness indicates connection strength. Subsequent charts offer more detailed views (click to expand). Explore paths to understand skill relevance for specific job families or technologies.
+                    </p>
+                 </div>
+
+                <div class="right-box content-box">
+                    <h2>Internship Matches & Insights</h2>
+
+                    {% if results %}
+                        {% if results.error %}
+                            <div class="info-box"><p class="text-red-400">{{ results.error }}</p></div>
+                        {% elif results.message %}
+                             <div class="info-box"><p>{{ results.message }}</p></div>
+                        {% else %}
+                            {% for job in results %}
+                            <div class="info-box">
+                                {{ job|safe }} {# Use 'safe' filter if 'job' contains HTML from backend #}
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <div class="summary-text info-box">
+                            <p><strong>Summary:</strong> Based on the connections shown, roles like [Example Role 1] and [Example Role 2] seem most relevant. Key skills include [Skill A] and [Skill B].</p>
+                        </div>
+                         <div class="suggestion-text info-box">
+                            <p><strong>Suggestions:</strong> To strengthen your profile for these roles, consider exploring courses in [Course X] or building projects using [Technology Y]. Focusing on [Skill C] could also be beneficial.</p>
+                        </div>
+
+                         <button class="action-button export-button">Export Report</button>
+
+                    {% elif query %}
+                      <div class="info-box"><p>No jobs found matching your profile criteria.</p></div>
+                    {% else %}
+                      <div class="info-box"><p>No profile data provided for search.</p></div>
+                    {% endif %}
+                </div>
+            </div> </div> <a href="/" class="action-button back-button">Back to Home</a>
+
+    </div> <script type="text/javascript">
+        // Load Google Charts Visualization API and the Sankey package
+        google.charts.load("current", { packages: ["sankey"] });
+        // Set callback to run when API is loaded
+        google.charts.setOnLoadCallback(drawAllCharts);
+
+        var chartObjects = []; // Array to store chart instances for redrawing on resize
+
+        // Function to draw all Sankey charts
+        function drawAllCharts() {
+            // Get the chart data passed from the backend (e.g., via Jinja template)
+            // Ensure this variable 'sankey_datas' is correctly populated in your template
+            const allSankeyDataStrings = {{ sankey_datas|safe }};
+
+            // Basic check if data exists and is an array
+            if (!Array.isArray(allSankeyDataStrings) || allSankeyDataStrings.length === 0) {
+                console.warn("No Sankey data provided or data is not an array.");
+                const chartsContainer = document.querySelector('.charts-container');
+                // Display message if no charts were even attempted to render
+                if(chartsContainer && !chartsContainer.querySelector('.sankey-container')) {
+                    chartsContainer.innerHTML = '<p class="text-gray-400 p-4 text-center">No Sankey data available to display.</p>';
+                }
+                return; // Exit if no data
+            }
+
+            // Color palette for Sankey nodes/links
+            var colors = ['#a6cee3', '#b2df8a', '#fb9a99', '#fdbf6f',
+                          '#cab2d6', '#ffff99', '#1f78b4', '#33a02c',
+                          '#ff7f00', '#e31a1c', '#6a3d9a', '#b15928'];
+
+            // Iterate through each chart's data string
+            allSankeyDataStrings.forEach((dataString, index) => {
+                try {
+                    // Find the corresponding div for this chart
+                    var chartDiv = document.getElementById('sankey_chart_' + index);
+                    if (!chartDiv) {
+                        console.error("Chart container div not found: sankey_chart_" + index);
+                        return; // Skip this chart if div is missing
+                    }
+
+                    // Parse the JSON string (assuming it contains {"data": [...]})
+                    const parsedJson = JSON.parse(dataString);
+                    const chartData = parsedJson.data; // Extract the actual data array
+
+                    // Validate parsed data
+                    if (!Array.isArray(chartData)) {
+                        console.error("Parsed data is not an array for chart index " + index);
+                        chartDiv.innerHTML = `<p style='color:#ff6b6b; padding: 20px;'>Error: Chart data ${index + 1} format is incorrect.</p>`;
+                        return; // Skip if data format is wrong
+                    }
+
+                    // Handle empty data for a specific chart
+                    if (chartData.length === 0) {
+                        console.warn("Chart data is empty for chart index " + index);
+                        // Display message inside the chart div
+                        chartDiv.innerHTML = `<p style='color:#ffcc66; padding: 20px;'>Chart ${index + 1}: No data to display.</p>`;
+                        return; // Skip drawing if no data rows
+                    }
+
+                    // Create a Google DataTable
+                    var dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn('string', 'From');
+                    dataTable.addColumn('string', 'To');
+                    dataTable.addColumn('number', 'Weight');
+                    dataTable.addRows(chartData);
+
+                    // Define chart options (consistent styling)
+                    var options = {
+                        width: '100%', // Use container width
+                        height: '100%', // Use container height (set via CSS)
+                        backgroundColor: 'transparent', // Match page background
+                        sankey: {
+                            node: {
+                                // width: 15, // Default width
+                                // nodePadding: 20, // Vertical spacing between nodes
+                                colors: colors, // Use defined palette
+                                label: {
+                                    color: '#e5e7eb', // gray-200 for labels
+                                    fontSize: 13,
+                                    fontName: 'sans-serif',
+                                    bold: false
+                                },
+                                interactivity: true // Allow hovering
+                            },
+                            link: {
+                                colorMode: 'gradient', // Or 'source', 'target'
+                                colors: colors // Use defined palette
+                            }
+                        },
+                        tooltip: {
+                            textStyle: { color: '#1f2937', fontName: 'sans-serif' }, // Dark text for tooltip
+                            showColorCode: true
+                        }
+                    };
+
+                    // Instantiate the Sankey chart
+                    var chart = new google.visualization.Sankey(chartDiv);
+
+                    // Add error listener for chart drawing issues
+                    google.visualization.events.addListener(chart, 'error', function (err) {
+                        console.error('Google Chart Error:', err.id, err.message);
+                         chartDiv.innerHTML = `<p style='color:#ff6b6b; padding: 20px;'>Error loading chart ${index + 1}: ${err.message}.</p>`;
+                    });
+
+                    // Draw the chart
+                    chart.draw(dataTable, options);
+
+                    // Store the chart object for resizing
+                    chartObjects.push({ chart: chart, data: dataTable, options: options, div: chartDiv });
+
+                } catch (e) {
+                    // Catch JSON parsing errors or other issues
+                    console.error("Error processing/drawing chart index " + index + ":", e);
+                    console.error("Problematic Data string:", dataString);
+                    if (chartDiv) {
+                        // Display error in the chart's div
+                        chartDiv.innerHTML = `<p style='color:#ff6b6b; padding: 20px;'>Fatal error loading chart data ${index + 1}. Check console.</p>`;
+                    }
+                }
+            }); // End forEach loop
+
+            // --- Initialize Accordion Functionality ---
+            setupAccordions();
+
+        } // End drawAllCharts function
+
+        // --- Accordion Logic ---
+        function setupAccordions() {
+             const accordionToggles = document.querySelectorAll('.accordion-toggle');
+
+             accordionToggles.forEach(toggle => {
+                 const content = toggle.nextElementSibling;
+                 const indicator = toggle.querySelector('.indicator');
+                 const chartDiv = content.querySelector('.sankey-chart-div'); // Get the chart div inside
+
+                 if (!content || !indicator || !chartDiv) {
+                     console.warn("Accordion structure incomplete for toggle:", toggle);
+                     return;
+                 }
+
+                 if (content.classList.contains('hidden')) {
+                     toggle.setAttribute('aria-expanded', 'false');
+                     indicator.textContent = '▼';
+                 } else {
+                     toggle.setAttribute('aria-expanded', 'true');
+                     indicator.textContent = '▲';
+                     toggle.classList.add('active');
+                 }
+
+                 toggle.addEventListener('click', () => {
+                     const isHidden = content.classList.contains('hidden');
+
+                     content.classList.toggle('hidden');
+                     toggle.classList.toggle('active');
+
+                     if (isHidden) {
+                         toggle.setAttribute('aria-expanded', 'true');
+                         indicator.textContent = '▲';
+                         // Redraw the chart when the accordion opens
+                         const chartToRedraw = chartObjects.find(obj => obj.div === chartDiv);
+                         if (chartToRedraw) {
+                             chartToRedraw.chart.draw(chartToRedraw.data, chartToRedraw.options);
+                         }
+                     } else {
+                         toggle.setAttribute('aria-expanded', 'false');
+                         indicator.textContent = '▼';
+                     }
+                 });
+             });
+        }
+
+
+        // --- Debounce function for resize handler ---
+        function debounce(func, wait, immediate) {
+            var timeout;
+            return function() {
+                var context = this, args = arguments;
+                var later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        };
+
+        // --- Function to redraw charts on window resize ---
+        function redrawAllCharts() {
+            console.log("Redrawing charts on resize...");
+            chartObjects.forEach(obj => {
+                 try {
+                     // Find the closest accordion content wrapper, if it exists
+                     const contentWrapper = obj.div.closest('.detailed-chart-content');
+                     // Check if the chart is visible (either overview or inside an expanded accordion)
+                     const isVisible = !contentWrapper || !contentWrapper.classList.contains('hidden');
+                     const isOverview = obj.div.id === 'sankey_chart_0';
+
+                     // Only redraw if the div exists and is visible
+                     if(document.body.contains(obj.div) && (isVisible || isOverview)) {
+                         obj.chart.draw(obj.data, obj.options);
+                     } else if (!document.body.contains(obj.div)) {
+                         console.warn("Chart div no longer in DOM during redraw:", obj.div.id);
+                     }
+                 } catch(e) {
+                    // Catch errors during redraw
+                    console.error("Error redrawing chart:", obj.div.id, e);
+                 }
+            });
+        } // End redrawAllCharts function
+
+        // --- Attach resize listener with debouncing ---
+        var debouncedRedraw = debounce(redrawAllCharts, 300); // Adjust delay as needed
+        window.addEventListener('resize', debouncedRedraw);
+
+    </script>
+
+    <script type="text/javascript">
+         particlesJS('particles-js', {
+            "particles": { "number": { "value": 250, "density": { "enable": true, "value_area": 900 } }, "color": { "value": ["#ff6b6b", "#4ecdc4", "#ffe66d", "#81ecec", "#6c5ce7"] }, "shape": { "type": "circle", "stroke": { "width": 1, "color": "#222" }, "polygon": { "nb_sides": 5 } }, "opacity": { "value": 0.8, "random": true, "anim": { "enable": true, "speed": 0.5, "opacity_min": 0.3, "sync": false } }, "size": { "value": 8, "random": true, "anim": { "enable": true, "speed": 2, "size_min": 1, "sync": false } }, "line_linked": { "enable": true, "distance": 130, "color": "#aaa", "opacity": 0.3, "width": 1 }, "move": { "enable": true, "speed": 2, "direction": "none", "random": true, "straight": false, "out_mode": "out", "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 } } }, "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "bubble": { "distance": 250, "size": 120, "duration": 0.6 }, "repulse": { "distance": 250, "duration": 0.6 }, "push": { "particles_nb": 6 }, "remove": { "particles_nb": 3 } } }, "retina_detect": true
+         });
+    </script>
+</body>
+
+</html>

@@ -35,32 +35,23 @@ def create_cluster(cluster_name, cluster_type, skill_list, taxonomy_dict):
                 
             # level 2 relation
             for skill, v in tqdm(taxonomy_dict.items(), desc=f'Add lv.2 relation of {cluster_name}'):
-                superclasses = v['is_a']
-                associated_terms = v['associate_to']
-                used_knowledges = v['use_knowledge_of']
                 synonyms = v['synonyms']
+                superclasses = v['subclass_of']
+                knowledges = v['use_knowledge_of']
 
                 for superclass in superclasses:
                     session.execute_write(merge_triple,
                                         subject=skill,
-                                        predicate='is_a',
+                                        predicate='subclass_of',
                                         object=superclass,
                                         subject_type='Skill',
                                         object_type='Skill')
                     
-                for associated_term in associated_terms:
-                    session.execute_write(merge_triple,
-                                        subject=skill,
-                                        predicate='associate_to',
-                                        object=associated_term,
-                                        subject_type='Skill',
-                                        object_type='Skill')
-                
-                for used_knowledge in used_knowledges:
+                for knowledge in knowledges:
                     session.execute_write(merge_triple,
                                         subject=skill,
                                         predicate='use_knowledge_of',
-                                        object=used_knowledge,
+                                        object=knowledge,
                                         subject_type='Skill',
                                         object_type='Skill')
 
@@ -71,59 +62,116 @@ def create_cluster(cluster_name, cluster_type, skill_list, taxonomy_dict):
                                         object=skill,
                                         subject_type='Skill',
                                         object_type='Skill')
-                    
-def _find_all_possible_course_job_path(tx):
-    query = (
-        "MATCH (course:Course)-[:include]->(course_skill:Skill)-[:relate]->(rep_skill:Skill)<-[:relate]-(job_skill:Skill)<-[:require]-(job:Job) "
-        "RETURN course, course_skill, rep_skill, job_skill, job"
-    )
-    result = tx.run(query)
-    return [record for record in result]
+
+def execute_read_query(query):
+    def _execute_read_query(tx):
+        result = tx.run(query)
+        return [record for record in result]
+    
+    with GraphDatabase.driver(uri, auth=auth) as driver:
+        with driver.session() as session:
+            result = session.execute_read(_execute_read_query)
+            return result
 
 def find_all_possible_course_job_path():
-    with GraphDatabase.driver(uri, auth=auth) as driver:
-        with driver.session() as session:
-            result = session.execute_read(_find_all_possible_course_job_path)
-            return result
-        
-def _find_all_possible_skill_job_path(tx):
-    query = (
-        "MATCH (skill:Skill)-[:relate]->(rep_skill:Skill)<-[:relate]-(job_skill:Skill)<-[:require]-(job:Job) "
-        "RETURN skill, rep_skill, job_skill, job"
-    )
-    result = tx.run(query)
-    return [record for record in result]
+    queries = {
+        'single_hop_synonym': (
+                "MATCH p = (:Job)-[:require]->(:Skill)<-[:include]-(:Course) "
+                "RETURN p"
+            ),
+        'multi_hop_synonym': (
+                "MATCH p = (:Job)-[:require]->(:Skill)-[:synonym*]-(:Skill)<-[:include]-(:Course) "
+                "RETURN p"
+            ),
+        # 'subclass_of': (
+        #         "MATCH p = (:Job)-[:require]->(:Skill)-[:subclass_of*..2]->(:Skill)<-[:include]-(:Course) "
+        #         "RETURN p"
+        #     ),
+        # 'subclass_of': (
+        #         "MATCH p = (:Job)-[:require]->(:Skill)-[:subclass_of*..2]-(:Skill)<-[:include]-(:Course) "
+        #         "RETURN p"
+        #     ),
+        # 'use_knowledge_of': (
+        #         "MATCH p = (:Job)-[:require]->(:Skill)-[:use_knowledge_of*..2]-(:Skill)<-[:include]-(:Course) "
+        #         "RETURN p"
+        #     ),
+    }
+
+    results = {}
+    for k, query in queries.items():
+        result = execute_read_query(query)
+        results[k] = result
+
+    return results
 
 def find_all_possible_skill_job_path():
-    with GraphDatabase.driver(uri, auth=auth) as driver:
-        with driver.session() as session:
-            result = session.execute_read(_find_all_possible_skill_job_path)
-            return result
-        
-def _find_all_job_requirement(tx):
-    query = (
-        "MATCH (job_skill:Skill)<-[:require]-(job:Job) "
-        "RETURN job_skill, job"
-    )
-    result = tx.run(query)
-    return [record for record in result]
+    queries = {
+        'single_hop_synonym': (
+                "MATCH p = (:Job)-[:require]->(:Skill) "
+                "RETURN p"
+            ),
+        'multi_hop_synonym': (
+                "MATCH p = (:Job)-[:require]->(:Skill)-[:synonym*]-(:Skill) "
+                "RETURN p"
+            ),
+        # 'subclass_of': (
+        #         "MATCH p = (:Job)-[:require]->(:Skill)-[:subclass_of*..2]->(:Skill) "
+        #         "RETURN p"
+        #     ),
+        # 'subclass_of': (
+        #         "MATCH p = (:Job)-[:require]->(:Skill)-[:subclass_of*..2]-(:Skill) "
+        #         "RETURN p"
+        #     ),
+        # 'use_knowledge_of': (
+        #         "MATCH p = (:Job)-[:require]->(:Skill)-[:use_knowledge_of*..2]-(:Skill) "
+        #         "RETURN p"
+        #     ),
+    }
 
-def find_all_job_requirement():
-    with GraphDatabase.driver(uri, auth=auth) as driver:
-        with driver.session() as session:
-            result = session.execute_read(_find_all_job_requirement)
-            return result
-        
-def _get_all_skills(tx):
+    results = {}
+    for k, query in queries.items():
+        result = execute_read_query(query)
+        results[k] = result
+
+    return results
+
+def find_each_job_requirement():
+    query = (
+        "MATCH (skill:Skill)<-[:require]-(job:Job) "
+        "RETURN skill, job"
+    )
+
+    result = execute_read_query(query)
+    return result
+
+def get_all_skills():
     query = (
         "MATCH (skill:Skill) "
         "RETURN skill"
     )
-    result = tx.run(query)
-    return [record for record in result]
 
-def get_all_skills():
-    with GraphDatabase.driver(uri, auth=auth) as driver:
-        with driver.session() as session:
-            result = session.execute_read(_get_all_skills)
-            return result
+    result = execute_read_query(query)
+    return result
+
+def node_to_text():
+    queries = {
+        'is synonym of': (
+                "MATCH p = (:Skill)-[:synonym]->(:Skill) "
+                "RETURN p"
+            ),
+        'is subclass of': (
+                "MATCH p = (:Skill)-[:subclass_of]->(:Skill) "
+                "RETURN p"
+            ),
+        'use knowledge of': (
+                "MATCH p = (:Skill)-[:use_knowledge_of]->(:Skill) "
+                "RETURN p"
+            ),
+    }
+
+    results = {}
+    for k, query in queries.items():
+        result = execute_read_query(query)
+        results[k] = result
+
+    return results

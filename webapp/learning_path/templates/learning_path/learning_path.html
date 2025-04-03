@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Pass - Your Learning Path</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <style>
+        /* Base styles - Inherited from reference */
+        body {
+            background-color: #111;
+            color: #eee;
+            font-family: sans-serif;
+            overflow-x: hidden; /* Allow vertical scroll if needed */
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Particles background styling */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Main content container */
+        .content-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 20px 20px 40px 20px; /* Adjust top/bottom padding */
+            z-index: 1; /* Above particles, below navbar */
+            box-sizing: border-box;
+            flex-grow: 1; /* Allow container to grow */
+        }
+
+        /* Cytoscape Graph Container */
+        #cy {
+            width: 100%;
+            max-width: 1200px; /* Max width for the graph */
+            height: 70vh; /* Viewport height based - adjust as needed */
+            min-height: 500px; /* Minimum height */
+            background-color: rgba(17, 24, 39, 0.6); /* Dark background (gray-900 with opacity) */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            margin-top: 1.5rem; /* Space below title */
+            margin-bottom: 1.5rem; /* Space above legend */
+        }
+
+        /* Legend Styling */
+        .legend-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem 1.5rem; /* Row and column gap */
+            padding: 0.75rem;
+            background-color: rgba(31, 41, 55, 0.7); /* input-section-container background */
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 800px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem; /* text-sm */
+            color: #d1d5db; /* gray-300 */
+        }
+        .legend-color-box {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Specific colors matching Cytoscape styles */
+        .legend-student { background-color: #f59e0b; } /* Amber-500 */
+        .legend-job { background-color: #8b5cf6; }    /* Violet-500 */
+        .legend-skill-acquired { background-color: #10b981; } /* Emerald-500 */
+        .legend-skill-needed { background-color: #ef4444; }  /* Red-500 */
+
+         /* Navbar Styling (Ensure consistency) */
+        .navbar {
+            position: sticky; /* Keep navbar sticky */
+            top: 0;
+            z-index: 20; /* Above content, below potential modals */
+            width: 100%;
+            background-color: rgba(17, 24, 39, 0.8); /* bg-gray-900/80 */
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 1.25rem; /* mb-5 */
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="/" class="text-white font-bold text-xl hover:text-indigo-300 transition duration-200">
+                        Knowledge Pass
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                     <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/" class="text-gray-300 hover:bg-gray-700/50 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200">Job Recommend</a>
+                        <a href="/learning_path_home" class="bg-indigo-600/80 text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Learning Path</a>
+                     </div>
+                </div>
+                 <div class="-mr-2 flex md:hidden">
+                    <button type="button" id="mobile-menu-button" class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                      <span class="sr-only">Open main menu</span>
+                      <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                      </svg>
+                      <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+            </div>
+        </div>
+         <div class="md:hidden hidden" id="mobile-menu">
+             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              <a href="/" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Job Recommend</a>
+              <a href="/learning_path_home" class="bg-indigo-600/80 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Learning Path</a>
+              <a href="/admin" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Admin</a>
+              </div>
+          </div>
+    </nav>
+
+    <div id="particles-js"></div>
+
+    <div class="content-container">
+
+        <h1 class="text-4xl md:text-5xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-500 to-sky-500 animate-pulse pb-2">
+            Your Learning Path
+        </h1>
+        <p class="text-lg text-gray-300 mb-2 text-center max-w-3xl">Visualizing skills required for your desired roles and your current progress.</p>
+
+        <div id="cy"></div>
+
+        <div class="legend-container">
+            <div class="legend-item">
+                <div class="legend-color-box legend-student"></div>
+                <span>You</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color-box legend-job"></div>
+                <span>Target Job Role</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color-box legend-skill-acquired"></div>
+                <span>Skill Acquired</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color-box legend-skill-needed"></div>
+                <span>Skill Needed</span>
+            </div>
+        </div>
+
+        <div id="learning-paths-container" class="w-full max-w-5xl mt-8 space-y-6">
+        </div>
+
+    </div> <script>
+        // --- Particles.js Initialization ---
+        particlesJS('particles-js', { /* ... Full Particle config object ... */
+            "particles": { "number": { "value": 250, "density": { "enable": true, "value_area": 900 } }, "color": { "value": ["#ff6b6b", "#4ecdc4", "#ffe66d", "#81ecec", "#6c5ce7"] }, "shape": { "type": "circle", "stroke": { "width": 1, "color": "#222" }, "polygon": { "nb_sides": 5 } }, "opacity": { "value": 0.8, "random": true, "anim": { "enable": true, "speed": 0.5, "opacity_min": 0.3, "sync": false } }, "size": { "value": 8, "random": true, "anim": { "enable": true, "speed": 2, "size_min": 1, "sync": false } }, "line_linked": { "enable": true, "distance": 130, "color": "#aaa", "opacity": 0.3, "width": 1 }, "move": { "enable": true, "speed": 2, "direction": "none", "random": true, "straight": false, "out_mode": "out", "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 } } }, "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "bubble": { "distance": 250, "size": 120, "duration": 0.6 }, "repulse": { "distance": 250, "duration": 0.6 }, "push": { "particles_nb": 6 }, "remove": { "particles_nb": 3 } } }, "retina_detect": true
+        });
+
+        // --- Navbar Mobile Menu Toggle ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuButton && mobileMenu) {
+            const openIcon = mobileMenuButton.querySelector('svg.block');
+            const closeIcon = mobileMenuButton.querySelector('svg.hidden');
+            mobileMenuButton.addEventListener('click', () => {
+                const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+                mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+                mobileMenu.classList.toggle('hidden');
+                openIcon.classList.toggle('hidden');
+                closeIcon.classList.toggle('hidden');
+            });
+        }
+
+        // --- Cytoscape Graph Initialization ---
+        const jobRequirements = JSON.parse('{{ job_requirements_json|safe }}');
+        const studentSkills = JSON.parse('{{ student_skills_json|safe }}');
+        const skillDetails = JSON.parse('{{ skill_details_json|safe }}');
+
+        // console.log("Job Requirements:", jobRequirements);
+        // console.log("Student Skills:", studentSkills);
+        // console.log("Skill Details:", skillDetails);
+
+
+        /**
+         * Generates the elements array (nodes and edges) for Cytoscape.
+         * @param {object} jobs - The job requirements object.
+         * @param {object} skillsAcquired - The student skills object (boolean map).
+         * @param {object} skillMeta - The skill details object (name map).
+         * @returns {Array} - Array of Cytoscape element definitions.
+         */
+        function generateGraphElements(jobs, skillsAcquired, skillMeta) {
+            const elements = [];
+            const uniqueSkills = new Set();
+
+            // 1. Add Student Node
+            elements.push({ data: { id: 'student', label: 'You', type: 'student' } });
+
+            // 2. Add Job Nodes and collect required skills
+            for (const jobId in jobs) {
+                elements.push({ data: { id: jobId, label: jobs[jobId].name, type: 'job' } });
+                jobs[jobId].skills.forEach(skillId => uniqueSkills.add(skillId));
+            }
+
+            // 3. Add Skill Nodes and Student->Skill Edges
+            uniqueSkills.forEach(skillId => {
+                 const acquired = skillsAcquired[skillId] === true; // Handle undefined as false
+                 const skillName = skillMeta[skillId] ? skillMeta[skillId].name : skillId; // Fallback to ID if no name
+
+                 // Add Skill Node
+                 elements.push({
+                     data: {
+                         id: skillId,
+                         label: skillName,
+                         type: 'skill' + (acquired ? '1' : '2'), // skill1 for acquired, skill2 for needed
+                        //  acquired: acquired
+                     }
+                 });
+
+                 // Add Edge: Student -> Skill
+                 elements.push({
+                     data: {
+                         id: `edge_student_${skillId}`,
+                         source: 'student',
+                         target: skillId
+                     }
+                 });
+            });
+
+             // 4. Add Skill->Job Edges
+             for (const jobId in jobs) {
+                 jobs[jobId].skills.forEach(skillId => {
+                     // Only add edge if the skill node exists (it should based on step 3)
+                     if (uniqueSkills.has(skillId)) {
+                          elements.push({
+                              data: {
+                                  id: `edge_${skillId}_${jobId}`,
+                                  source: skillId,
+                                  target: jobId
+                              }
+                          });
+                     }
+                 });
+             }
+
+            return elements;
+        }
+
+        // --- Cytoscape Initialization ---
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const graphElements = generateGraphElements(jobRequirements, studentSkills, skillDetails);
+
+                const cy = cytoscape({
+                    container: document.getElementById('cy'), // container to render in
+
+                    elements: graphElements, // List of graph elements (nodes & edges)
+
+                    zoom: 1.2,
+                    minZoom: 0.4,
+                    maxZoom: 3,
+
+                    style: [ // Stylesheet for the graph
+                        { // Base node style
+                            selector: 'node',
+                            style: {
+                                'background-color': '#666', // Default grey
+                                'label': 'data(label)',
+                                'width': 'label', // Auto width based on label
+                                'height': 'label', // Auto height based on label
+                                'padding': '12px', // Padding around label
+                                'shape': 'round-rectangle', // Nice shape
+                                'color': '#eee', // Label color
+                                'font-size': '12px',
+                                'text-wrap': 'wrap',
+                                'text-max-width': '120px',
+                                'text-valign': 'center',
+                                'text-halign': 'center',
+                                'border-width': 1,
+                                'border-color': '#aaa',
+                                'text-outline-width': 1.5, // Outline for contrast
+                                'text-outline-color': '#222', // Dark outline
+                                'text-outline-opacity': 0.8
+                            }
+                        },
+                        { // Student node style
+                            selector: 'node[type="student"]',
+                            style: {
+                                'background-color': '#f59e0b', // Amber-500
+                                'border-color': '#fde68a', // Lighter amber border
+                                'border-width': 2,
+                                'font-size': '15px',
+                                'font-weight': 'bold',
+                                'padding': '15px',
+                                'z-index': 10 // Ensure student node is prominent
+                            }
+                        },
+                        { // Job node style
+                             selector: 'node[type="job"]',
+                             style: {
+                                'background-color': '#8b5cf6', // Violet-500
+                                'border-color': '#c4b5fd', // Lighter violet border
+                                'border-width': 2,
+                                'font-size': '14px',
+                                'font-weight': 'bold',
+                                'padding': '14px',
+                                'shape': 'ellipse' // Differentiate job shape
+                             }
+                        },
+                        { // Acquired skill node style (student_skills == true)
+                             selector: 'node[type="skill1"]',
+                             style: {
+                                'background-color': '#10b981', // Emerald-500 (Green)
+                                'border-color': '#6ee7b7', // Lighter emerald border
+                             }
+                        },
+                        { // Needed skill node style (student_skills == false)
+                            selector: 'node[type="skill2"]',
+                            style: {
+                                'background-color': '#ef4444', // Red-500 (Red)
+                                'border-color': '#fca5a5', // Lighter red border
+                                // 'border-style': 'dashed' // Optional: Dashed border for needed skills
+                            }
+                        },
+                        { // Base edge style
+                            selector: 'edge',
+                            style: {
+                                'width': 1.5,
+                                'line-color': '#667', // Mid-grey lines
+                                'target-arrow-shape': 'triangle',
+                                'target-arrow-color': '#667',
+                                'curve-style': 'bezier', // Smooth curves
+                                'opacity': 0.7
+                            }
+                        },
+                        { // Style edges from student to skill
+                            selector: 'edge[source="student"]',
+                            style: {
+                                'line-style': 'dashed',
+                                'line-color': '#aaa', // Optional: Adjust color if needed
+                                'target-arrow-color': '#aaa' // Optional: Match arrow color
+                            }
+                        }                       
+                    ],
+
+                    layout: { // Layout algorithm
+                        name: 'cose', // Compound Spring Embedder - good for general graphs
+                        // Recommended Cose options for this style:
+                        idealEdgeLength: 120,       // Preferred edge length
+                        nodeOverlap: 20,            // Extra space between nodes
+                        refresh: 20,                // Animation steps
+                        fit: false,                  // Fit graph to viewport
+                        padding: 40,                // Padding around viewport
+                        randomize: true,           // Start with random positions
+                        componentSpacing: 100,      // Space between unconnected components
+                        nodeRepulsion: function( node ){ return 450000; }, // Strong repulsion
+                        edgeElasticity: function( edge ){ return 150; }, // Edge stiffness
+                        nestingFactor: 5,           // For compound nodes (not used here, default is fine)
+                        gravity: 90,                // Pulls nodes towards center
+                        numIter: 1000,              // Max iterations
+                        initialTemp: 200,           // Initial temperature for annealing
+                        coolingFactor: 0.95,        // Cooling rate
+                        minTemp: 1.0,               // Minimum temperature
+                        // Other layout options: 'grid', 'circle', 'breadthfirst', 'dagre' (requires extension)
+                    }
+                });
+
+                // ***** Keep centering on ready *****
+                cy.on('ready', function(event) {
+                  console.log('Cytoscape core ready, centering graph.');
+                  cy.center(); // Center the graph in the viewport at the initial 1.2 zoom
+                });
+
+                console.log("Cytoscape graph initialized.");
+
+                // Optional: Add interactivity like node highlighting on tap
+                 cy.on('tap', 'node', function(evt){
+                   var node = evt.target;
+                   console.log( 'Tapped ' + node.id() + ' (' + node.data('label') + ')' );
+                   // Example: Slightly increase border width on tap
+                   node.style('border-width', '3px');
+                   setTimeout(() => node.style('border-width', node.data('type') === 'student' || node.data('type') === 'job' ? '2px' : '1px'), 500); // Reset after delay
+                 });
+
+                 // == NEW CODE: Generate Learning Path Cards ==
+
+                const learningPathsContainer = document.getElementById('learning-paths-container');
+                if (!learningPathsContainer) {
+                    console.error("Learning paths container not found!");
+                    return; // Exit if container doesn't exist
+                }
+
+                // --- !!! Placeholder Course Data !!! ---
+                // Structure: { skillId: [{id: 'COURSE101', name: 'Course Name', university: 'University Name'}, ...] }
+                // Replace this with your actual data source (e.g., fetched from an API)
+                const courseData = JSON.parse('{{ skill_course_json|safe }}');
+                // --- End Placeholder Course Data ---
+
+
+                // Function to create HTML for a single course
+                function createCourseHTML(course) {
+                    return `
+                        <li class="course-item text-sm text-gray-400 group hover:text-indigo-300 transition duration-200 flex items-center space-x-2">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 group-hover:text-indigo-400 transition duration-200" viewBox="0 0 20 20" fill="currentColor">
+                             <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 16c1.255 0 2.443-.29 3.5-.804V4.804zM14.5 4c1.255 0 2.443.29 3.5.804v10A7.969 7.969 0 0114.5 16c-1.255 0-2.443-.29-3.5-.804V4.804A7.968 7.968 0 0114.5 4z" />
+                           </svg>
+                           <span>
+                             <strong>${course.name || 'Unnamed Course'}</strong>
+                           </span>
+                        </li>
+                    `;
+                }
+
+                // Function to create HTML for a single skill step
+                function createStepHTML(skillId, index, isAcquired, skillMeta, courses) {
+                    const skillName = skillMeta[skillId] ? skillMeta[skillId].name : skillId; // Fallback to ID
+                    const relevantCourses = courses[skillId] || []; // Get courses for this skill
+                    const statusColor = isAcquired ? 'border-emerald-500' : 'border-red-500';
+                    const statusText = isAcquired ? 'Acquired' : 'Needed';
+                    const statusTextColor = isAcquired ? 'text-emerald-400' : 'text-red-400';
+                    const icon = isAcquired
+                        ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>`
+                        : `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>`;
+
+                    const coursesHTML = relevantCourses.length > 0
+                        ? `<ul class="course-list mt-3 space-y-1.5 pl-6 list-inside">${relevantCourses.map(createCourseHTML).join('')}</ul>`
+                        : '<p class="mt-2 pl-6 text-sm text-gray-500 italic">No specific courses listed for this skill.</p>';
+
+                    return `
+                        <div class="step-item bg-gray-800/60 backdrop-blur-sm border-l-4 ${statusColor} rounded-r-md p-4 shadow-md hover:shadow-lg hover:shadow-indigo-700/30 transition duration-300 ease-in-out transform hover:-translate-y-1">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">Step ${index + 1}</span>
+                                    <h4 class="text-lg font-semibold text-gray-100 mt-1">${skillName}</h4>
+                                </div>
+                                <div class="flex items-center space-x-2 mt-1">
+                                     ${icon}
+                                    <span class="text-xs font-bold ${statusTextColor}">${statusText}</span>
+                                </div>
+                            </div>
+                            <div class="mt-3 border-t border-gray-700/50 pt-3">
+                                <h5 class="text-sm font-semibold text-gray-300 mb-2">Relevant Courses:</h5>
+                                ${coursesHTML}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Main loop to generate cards for each job
+                for (const jobId in jobRequirements) {
+                    const job = jobRequirements[jobId];
+                    const jobCard = document.createElement('div');
+                    jobCard.className = 'job-learning-path-card flex flex-col max-h-[800px] bg-slate-900/70 backdrop-blur-md border border-indigo-900/50 rounded-xl p-5 md:p-6 shadow-xl shadow-indigo-900/20';
+
+                    // Card Header
+                    const cardHeader = `
+                        <div class="flex items-center space-x-3 mb-4 border-b border-indigo-800/40 pb-3 flex-shrink-0">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                               <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                             </svg>
+                            <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-400">${job.name || 'Unnamed Job Role'} - Learning Path</h3>
+                        </div>
+                    `;
+                    jobCard.innerHTML = cardHeader; // Add header first
+
+                    // Steps Container
+                    const stepsContainer = document.createElement('div');
+                    // ***** MODIFIED LINE *****
+                    // Added: overflow-y-auto flex-grow pr-2 (adjust pr- value if needed)
+                    stepsContainer.className = 'steps-container space-y-4 overflow-y-auto flex-grow pr-2'; // Spacing between steps
+
+                    // Generate steps for the current job
+                    job.skills.forEach((skillId, index) => {
+                        const isAcquired = studentSkills[skillId] === true;
+                        const stepHTML = createStepHTML(skillId, index, isAcquired, skillDetails, courseData);
+                        stepsContainer.innerHTML += stepHTML; // Append step HTML
+                    });
+
+                    jobCard.appendChild(stepsContainer); // Add steps container to the card
+                    learningPathsContainer.appendChild(jobCard); // Add the complete card to the main container
+                }
+
+                console.log("Learning path cards generated.");
+
+
+            } catch (error) {
+                console.error("Error initializing Cytoscape:", error);
+                const graphContainer = document.getElementById('cy');
+                if(graphContainer) {
+                    graphContainer.innerHTML = '<p class="text-red-500 p-4 text-center">Could not load learning path graph. Please try again later.</p>';
+                }
+            }
+        });
+
+    </script>
+
+</body>
+</html>

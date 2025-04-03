@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Pass - Personalized Internships</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <style>
+        /* Base styles */
+        body {
+            background-color: #111; /* Dark background */
+            color: #eee; /* Light text */
+            font-family: sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            min-height: 100vh; /* Ensure body takes full height */
+        }
+
+        /* Particles background styling */
+        #particles-js {
+            position: fixed; /* Keep particles fixed in background */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Behind content */
+        }
+
+        /* Main content container */
+        .content-container {
+            position: relative; /* Needed for z-index */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            width: 100%;
+            padding: 40px 20px; /* Padding around content */
+            z-index: 1; /* Above particles */
+            box-sizing: border-box;
+        }
+
+        /* Styling for containers holding tags or file input */
+        .input-section-container {
+            background-color: rgba(31, 41, 55, 0.7); /* Semi-transparent dark gray */
+            padding: 2rem;
+            border-radius: 12px; /* Rounded corners */
+            margin-bottom: 1.5rem; /* Space below container */
+            width: 100%;
+            max-width: 600px; /* Limit width */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Subtle shadow */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Faint border */
+        }
+
+        /* Area where tags are displayed */
+        .tag-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem; /* Space between tags */
+            margin-top: 1rem; /* Space below heading */
+        }
+
+        /* Individual tag styling */
+        .tag {
+            background-color: #4f46e5; /* Indigo base */
+            color: white;
+            padding: 0.5rem 1rem; /* Padding */
+            border-radius: 9999px; /* Pill shape */
+            cursor: pointer;
+            font-size: 0.875rem; /* Small font */
+            font-weight: 500; /* Medium weight */
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border: 1px solid transparent;
+            user-select: none; /* Prevent text selection on click */
+        }
+
+        .tag:hover {
+            background-color: #6366f1; /* Lighter indigo on hover */
+            transform: translateY(-1px); /* Slight lift */
+        }
+
+        /* Styling for selected/active tags */
+        .tag.active {
+            background-color: #10b981; /* Emerald green for active */
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); /* Glow effect */
+        }
+        .tag.active:hover {
+            background-color: #059669; /* Darker emerald on hover */
+        }
+
+        /* Styling specifically for the file input */
+        .file-input-container {
+             text-align: center; /* Center content inside */
+        }
+
+        input[type="file"] {
+            color: #cbd5e1; /* Lighter text for file input info (slate-300) */
+            font-size: 0.875rem; /* text-sm */
+             /* Ensure block display and centering if needed */
+             display: block;
+             margin-left: auto;
+             margin-right: auto;
+             max-width: max-content; /* Prevent stretching */
+        }
+
+        /* Style the button part of the file input */
+        input[type="file"]::file-selector-button {
+            background-color: #6366f1; /* Indigo-500 */
+            color: white;
+            padding: 0.5rem 1rem; /* py-2 px-4 */
+            border: none;
+            border-radius: 6px; /* rounded-md */
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            margin-right: 1rem; /* mr-4 */
+            font-weight: 500; /* font-medium */
+        }
+
+        input[type="file"]::file-selector-button:hover {
+             background-color: #4f46e5; /* Indigo-600 */
+        }
+
+        /* Style for error messages */
+        .error-message {
+             color: #f87171; /* Red-400 */
+             margin-top: 1rem;
+             text-align: center;
+             font-weight: 600; /* font-semibold */
+             min-height: 1.5rem; /* Ensure space is reserved even when hidden */
+        }
+        .error-message.hidden {
+             display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar sticky top-0 z-20 w-full bg-gray-900/80 backdrop-blur-md shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="/" class="text-white font-bold text-xl hover:text-indigo-300 transition duration-200">
+                        Knowledge Pass
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/" class="bg-indigo-600/80 text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Job Recommend</a>
+                        <a href="/learning_path_home" class="text-gray-300 hover:bg-gray-700/50 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200">Learning Path</a>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="/" class="bg-indigo-600/80 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Home</a>
+                <a href="/learning_path_home" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Learning Path</a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="particles-js"></div>
+
+    <div class="content-container">
+
+        <h1 class="text-5xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 animate-pulse pb-3">Personalized Job Recommender</h1>
+        <p class="text-xl text-gray-300 mb-10 text-center max-w-2xl">Select your courses and skills to discover personalized internship opportunities.</p>
+
+        <form id="recommendation-form" method="POST" action="/visualization/" enctype="multipart/form-data" class="w-full h-screen flex flex-col items-center justify-center">
+            {% csrf_token %}
+        
+             <div class="input-section-container w-full max-w-xl mb-6">
+                <h2 class="text-2xl font-semibold text-gray-100">Select Your Enrolled Courses</h2>
+                <div class="tag-area" id="courses-tag-area">
+                    <span class="text-gray-400 text-sm">Loading courses...</span>
+                </div>
+            </div>
+        
+            <div class="input-section-container w-full max-w-xl mb-6">
+                <h2 class="text-2xl font-semibold text-gray-100">Select Your Unique Skills</h2>
+                <div class="tag-area" id="skills-tag-area">
+                    <span class="text-gray-400 text-sm">Loading skills...</span>
+                </div>
+            </div>
+        
+            <div class="input-section-container file-input-container w-full max-w-xl mb-6">
+                <label for="cv-upload" class="block text-xl font-semibold text-gray-100 mb-3">Upload Your CV/Resume (Optional)</label>
+                 <input type="file" id="cv-upload" name="resume_file" accept=".pdf,.doc,.docx" class="block w-full cursor-pointer focus:outline-none">
+                 <p class="text-xs text-gray-400 mt-2">Accepted formats: PDF, DOC, DOCX</p>
+            </div>
+        
+             <div id="hidden-inputs"></div>
+        
+             <div id="form-error" class="error-message hidden"></div>
+        
+             <button type="submit" id="recommendation-button"
+                    class="mt-6 px-10 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-xl font-bold rounded-lg shadow-lg hover:from-emerald-600 hover:to-teal-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-emerald-400">
+                Get Personalized Recommendations
+            </button>
+        
+        </form>
+        </div>
+
+    <script>
+        // --- Particles.js Initialization ---
+        // IMPORTANT: Paste your full particles.js configuration object here
+        particlesJS('particles-js', {
+            "particles": { "number": { "value": 250, "density": { "enable": true, "value_area": 900 } }, "color": { "value": ["#ff6b6b", "#4ecdc4", "#ffe66d", "#81ecec", "#6c5ce7"] }, "shape": { "type": "circle", "stroke": { "width": 1, "color": "#222" }, "polygon": { "nb_sides": 5 } }, "opacity": { "value": 0.8, "random": true, "anim": { "enable": true, "speed": 0.5, "opacity_min": 0.3, "sync": false } }, "size": { "value": 8, "random": true, "anim": { "enable": true, "speed": 2, "size_min": 1, "sync": false } }, "line_linked": { "enable": true, "distance": 130, "color": "#aaa", "opacity": 0.3, "width": 1 }, "move": { "enable": true, "speed": 2, "direction": "none", "random": true, "straight": false, "out_mode": "out", "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 } } }, "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "bubble": { "distance": 250, "size": 120, "duration": 0.6 }, "repulse": { "distance": 250, "duration": 0.6 }, "push": { "particles_nb": 6 }, "remove": { "particles_nb": 3 } } }, "retina_detect": true
+         });
+
+        // --- Sample Tag Data ---
+        // In a real application, you would likely fetch this data from your backend
+        const sampleCourses = [
+            "SF230", "SF211", "CN310", "SF222", "CN351", "SF210", "SF212", "CN311", "SF220", "Introduction to Programming", "Data Structures", "Algorithms", "Database Systems",
+            "Web Development", "Machine Learning"
+        ];
+        const sampleSkills = [
+            "SQL", 'Java', 'Python', 'C++', 'JavaScript', 'HTML', 'CSS', 'R', 'C#', 'PHP', 'Ruby', 'Swift', 'Go', 'Kotlin', 'MATLAB', 'Perl', 'Rust', 'Scala', 'Dart', 'Assembly',
+            "React", "Node.js", "Docker", "AWS",
+            "Git"
+        ];
+
+        // --- State Variables (using Sets for efficient add/delete/check) ---
+        const selectedCourses = new Set();
+        const selectedSkills = new Set();
+
+        // --- DOM Element References ---
+        const coursesTagArea = document.getElementById('courses-tag-area');
+        const skillsTagArea = document.getElementById('skills-tag-area');
+        // const cvUploadInput = document.getElementById('cv-upload'); // Ref if needed
+        const recommendationForm = document.getElementById('recommendation-form');
+        const hiddenInputsContainer = document.getElementById('hidden-inputs');
+        const formErrorDiv = document.getElementById('form-error');
+
+        // --- Core Functions ---
+
+        /**
+         * Creates a clickable tag element.
+         * @param {string} text - The text content of the tag.
+         * @param {Set<string>} selectedSet - The Set (selectedCourses or selectedSkills) to update.
+         * @returns {HTMLSpanElement} The created tag element.
+         */
+        function createTagElement(text, selectedSet) {
+            const tag = document.createElement('span');
+            tag.classList.add('tag'); // Apply base tag style
+            tag.textContent = text;
+            tag.dataset.value = text; // Store the value in data attribute
+
+            // Click listener to toggle selection state
+            tag.addEventListener('click', () => {
+                tag.classList.toggle('active'); // Toggle visual 'active' state
+                if (tag.classList.contains('active')) {
+                    selectedSet.add(text); // Add to the corresponding Set
+                } else {
+                    selectedSet.delete(text); // Remove from the Set
+                }
+                formErrorDiv.classList.add('hidden'); // Hide error message on interaction
+                // console.log("Selected Courses:", Array.from(selectedCourses)); // For debugging
+                // console.log("Selected Skills:", Array.from(selectedSkills)); // For debugging
+            });
+            return tag;
+        }
+
+        /**
+         * Populates a container element with tag elements from an array.
+         * @param {HTMLElement} areaElement - The container element (e.g., coursesTagArea).
+         * @param {string[]} tagsArray - The array of strings to create tags from.
+         * @param {Set<string>} selectedSet - The Set corresponding to this tag type.
+         */
+        function populateTags(areaElement, tagsArray, selectedSet) {
+            areaElement.innerHTML = ''; // Clear existing content (like "Loading...")
+            if (!tagsArray || tagsArray.length === 0) {
+                areaElement.textContent = "No items available."; // Handle empty data case
+                areaElement.classList.add("text-gray-400", "text-sm");
+                return;
+            }
+            tagsArray.forEach(tagText => {
+                const tagElement = createTagElement(tagText, selectedSet);
+                areaElement.appendChild(tagElement);
+            });
+        }
+
+        // --- Event Listener for Form Submission ---
+        // This function runs just before the form is submitted to the backend.
+        recommendationForm.addEventListener('submit', function(event) {
+            // 1. Clear any hidden inputs from previous attempts (if any)
+            hiddenInputsContainer.innerHTML = '';
+            // 2. Hide any previous error messages
+            formErrorDiv.classList.add('hidden');
+
+            // 3. Optional: Basic Validation - ensure at least one tag is selected
+            if (selectedCourses.size === 0 && selectedSkills.size === 0) {
+                 event.preventDefault(); // IMPORTANT: Stop the form from submitting
+                 formErrorDiv.textContent = "Please select at least one course or skill.";
+                 formErrorDiv.classList.remove('hidden'); // Show the error message
+                 console.error("Form submission prevented: No courses or skills selected.");
+                 window.scrollTo(0, document.body.scrollHeight); // Scroll to bottom where button/error is
+                 return; // Exit the function
+            }
+
+             console.log("Form validation passed. Populating hidden inputs...");
+
+            // 4. Populate hidden input fields for selected courses
+            selectedCourses.forEach(course => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'courses'; // This name MUST match request.POST.getlist('courses') in Django
+                input.value = course;
+                hiddenInputsContainer.appendChild(input);
+                // console.log(`Appending hidden course: ${course}`); // For debugging
+            });
+
+            // 5. Populate hidden input fields for selected skills
+            selectedSkills.forEach(skill => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'skills'; // This name MUST match request.POST.getlist('skills') in Django
+                input.value = skill;
+                hiddenInputsContainer.appendChild(input);
+                // console.log(`Appending hidden skill: ${skill}`); // For debugging
+            });
+
+             console.log("Hidden inputs populated. Allowing form submission to proceed.");
+            // 6. If event.preventDefault() was not called, the form will now submit naturally.
+        });
+
+
+        // --- Initialization Code ---
+        // This runs after the page structure (DOM) is fully loaded.
+        document.addEventListener('DOMContentLoaded', () => {
+            // Populate the tag areas with data
+            populateTags(coursesTagArea, sampleCourses, selectedCourses);
+            populateTags(skillsTagArea, sampleSkills, selectedSkills);
+
+            console.log("Knowledge Pass form initialized.");
+        });
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Pass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <style>
+        body {
+            background-color: #111;
+            color: #eee;
+            font-family: sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            height: 100%;
+        }
+
+        #particles-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .space-background {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .search-container {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 20px;
+            box-shadow: none;
+            width: 400px;
+            max-width: 90%;
+            display: flex;
+        }
+
+        .search-input {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 20px 0 0 20px;
+            width: 100%;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .search-button {
+            background-color: #6366f1;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .job-categories {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .job-category {
+            display: inline-block;
+            margin: 10px;
+            padding: 20px 30px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .job-category:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .suggestions {
+            position: absolute; /* Position relative to the search container */
+            top: 100%; /* Appear below the input */
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+            color: white;
+            border-radius: 0 0 20px 20px; /* Round the bottom corners */
+            max-height: 200px; /* Set a maximum height */
+            overflow-y: auto; /* Add a scrollbar if needed */
+            z-index: 10; /* Ensure it's on top */
+        }
+
+        .suggestion {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .suggestion:hover {
+            background-color: rgba(0, 0, 0, 0.9); /* Darker on hover */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="particles-js"></div>
+    <div class="space-background">
+        <h1 class="text-4xl font-bold mb-4">สวัสดี เพื่อน ๆ อยากจะไปฝึกงานอะไรกัน</h1>
+        <div class="search-container relative">  <input type="text" class="search-input" placeholder="Search for jobs..." id="search-input"
+                onkeyup="showSuggestions()">
+            <button class="search-button" onclick="redirectToSearch()">Search</button>
+            <div class="suggestions" id="suggestions-box"></div>
+        </div>
+    </div>
+
+    <div class="job-categories">
+        <a href="#" class="job-category">Engineering</a>
+        <a href="#" class="job-category">Science</a>
+        <a href="#" class="job-category">Astronaut</a>
+        <a href="#" class="job-category">Other</a>
+    </div>
+
+    <script>
+        particlesJS('particles-js', {
+        "particles": {
+            "number": {
+            "value": 250,
+            "density": {
+                "enable": true,
+                "value_area": 900
+            }
+            },
+            "color": {
+            "value": ["#ff6b6b", "#4ecdc4", "#ffe66d", "#81ecec", "#6c5ce7"]
+            },
+            "shape": {
+            "type": "circle",
+            "stroke": {
+                "width": 1,
+                "color": "#222"
+            },
+            "polygon": {
+                "nb_sides": 5
+            }
+            },
+            "opacity": {
+            "value": 0.8,
+            "random": true,
+            "anim": {
+                "enable": true,
+                "speed": 0.5,
+                "opacity_min": 0.3,
+                "sync": false
+            }
+            },
+            "size": {
+            "value": 8, // Increased default particle size
+            "random": true,
+            "anim": {
+                "enable": true,
+                "speed": 2,
+                "size_min": 1,
+                "sync": false
+            }
+            },
+            "line_linked": {
+            "enable": true,
+            "distance": 130,
+            "color": "#aaa",
+            "opacity": 0.3,
+            "width": 1
+            },
+            "move": {
+            "enable": true,
+            "speed": 2,
+            "direction": "none",
+            "random": true,
+            "straight": false,
+            "out_mode": "out",
+            "attract": {
+                "enable": false,
+                "rotateX": 600,
+                "rotateY": 1200
+            }
+            }
+        },
+        "interactivity": {
+            "detect_on": "canvas",
+            "events": {
+            "onhover": {
+                "enable": true,
+                "mode": "grab"
+            },
+            "onclick": {
+                "enable": true,
+                "mode": "push"
+            },
+            "resize": true
+            },
+            "modes": {
+            "grab": {
+                "distance": 140,
+                "line_linked": {
+                "opacity": 1
+                }
+            },
+            "bubble": {
+                "distance": 250,
+                "size": 120,
+                "duration": 0.6
+            },
+            "repulse": {
+                "distance": 250,
+                "duration": 0.6
+            },
+            "push": {
+                "particles_nb": 6
+            },
+            "remove": {
+                "particles_nb": 3
+            }
+            }
+        },
+        "retina_detect": true
+        });
+
+        let jobTitles = [];
+
+        const searchInput = document.getElementById('search-input');
+        const suggestionsBox = document.getElementById('suggestions-box');
+
+        async function fetchJobTitles() {
+            try {
+                const response = await fetch('http://127.0.0.1:8081/get_all_job');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();  // Assuming the API returns JSON
+                    if (Array.isArray(data)) { //check if data is array
+                        jobTitles = data.map(item => item.job_name || item.name || item); // Extract job names, handle potential missing 'job_name' or 'name'
+                    } else if (typeof data === 'object' && data !== null) {
+                        jobTitles = Object.values(data).map(item => item.job_name || item.name || item);
+                    } else {
+                        console.error("Unexpected data format from API:", data);
+                        // Handle the error appropriately, e.g., display a message to the user.
+                        jobTitles = ['Error loading jobs.']; // Or some default value.
+                    }
+                
+            } catch (error) {
+                console.error("Error fetching job titles:", error);
+                // Handle the error, e.g., display a message to the user.
+                jobTitles = ['Error loading jobs.']; // Or some default value.
+            }
+        }
+
+        function showSuggestions() {
+            const inputValue = searchInput.value.toLowerCase();
+            const matchingTitles = jobTitles.filter(title =>
+                title.toLowerCase().startsWith(inputValue)
+            );
+
+            suggestionsBox.innerHTML = ""; // Clear previous suggestions
+
+            if (inputValue.length === 0 || matchingTitles.length === 0) {
+                suggestionsBox.style.display = "none"; // Hide if no input or no match
+                return;
+            }
+
+            matchingTitles.forEach(title => {
+                const suggestion = document.createElement('div');
+                suggestion.classList.add('suggestion');
+                suggestion.textContent = title;
+                suggestion.addEventListener('click', () => {
+                    searchInput.value = title;
+                    suggestionsBox.style.display = "none"; // Hide suggestions after selection
+                });
+                suggestionsBox.appendChild(suggestion);
+            });
+
+            suggestionsBox.style.display = "block"; // Show suggestions
+
+            if (event.key === "Enter") {  // Check if Enter key was pressed
+               redirectToSearch();
+            }
+        }
+
+        function redirectToSearch() {
+            const query = document.getElementById('search-input').value;
+            if (query.trim()!== "") { // Check if the query is not empty or just whitespace
+                window.location.href = '/visualization';
+            } else {
+                // Handle empty query (e.g., show an alert, do nothing, etc.)
+                alert("Please enter a search query."); // Example: show an alert
+            }
+        }
+
+        searchInput.addEventListener('blur', () => {
+          setTimeout(() => {
+            suggestionsBox.style.display = 'none';
+          }, 200); // Small delay to allow click to register
+        });
+
+        // fetchJobTitles();
+
+    </script>
+
+</body>
+
+</html>

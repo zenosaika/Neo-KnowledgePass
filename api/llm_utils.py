@@ -83,7 +83,7 @@ def extract_skill(input_data, input_type):
 def extract_taxonomy(word_list):
     chats = [
         types.Part.from_text(
-            text=f"Generate a detailed taxonomy for the skill keyword {word_list}. Focus on identifying specific, meaningful relationships, and avoid overly general categories like 'technique' unless absolutely necessary."
+            text=f"Generate a detailed taxonomy for the skill keyword {word_list}. Focus on identifying specific, meaningful relationships, keyword only, and avoid overly general categories unless absolutely necessary. Including full name, abbreviations in synonyms."
         ),
     ]
 
@@ -91,19 +91,16 @@ def extract_taxonomy(word_list):
         response_mime_type="application/json",
         response_schema=genai.types.Schema(
             type = genai.types.Type.OBJECT,
-            required = ["ordered_result"],
+            required = ["ordered_results"],
             properties = {
-                "ordered_result": genai.types.Schema(
+                "ordered_results": genai.types.Schema(
                     type = genai.types.Type.ARRAY,
                     items = genai.types.Schema(
                         type = genai.types.Type.OBJECT,
-                        required = ["is_a", "synonyms", "name", "associate_to", "use_knowledge_of"],
+                        required = ["name", "synonyms", "subclass_of", "use_knowledge_of"],
                         properties = {
-                            "is_a": genai.types.Schema(
-                                type = genai.types.Type.ARRAY,
-                                items = genai.types.Schema(
-                                    type = genai.types.Type.STRING,
-                                ),
+                            "name": genai.types.Schema(
+                                type = genai.types.Type.STRING,
                             ),
                             "synonyms": genai.types.Schema(
                                 type = genai.types.Type.ARRAY,
@@ -111,10 +108,7 @@ def extract_taxonomy(word_list):
                                     type = genai.types.Type.STRING,
                                 ),
                             ),
-                            "name": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                            ),
-                            "associate_to": genai.types.Schema(
+                            "subclass_of": genai.types.Schema(
                                 type = genai.types.Type.ARRAY,
                                 items = genai.types.Schema(
                                     type = genai.types.Type.STRING,
@@ -137,11 +131,72 @@ def extract_taxonomy(word_list):
 
     taxonomy_dict = {
         o['name']: {
-            'is_a': o['is_a'],
-            'associate_to': o['associate_to'],
-            'use_knowledge_of': o['use_knowledge_of'],
             'synonyms': o['synonyms'], 
-        } for o in json_obj['ordered_result']
+            'subclass_of': o['subclass_of'],
+            'use_knowledge_of': o['use_knowledge_of'],
+        } for o in json_obj['ordered_results']
     }
 
     return taxonomy_dict
+
+
+# def generate_learning_path(job_fulfillment):
+#     text = "please create learning path from this job requirements (key is requirement, value tell that the student have learn skill already or not)\n"
+#     for k, v in job_fulfillment.items():
+#         text += f"job name : {k}\n{v}\n"
+#     text += "\nto guide student to learn in chronological order, please give short and useful description for each step, i will plot each step into learning path, please include the step that student have learn already too"
+#     chats = [
+#         types.Part.from_text(text=f"""please create learning path from this job requirements (key is requirement, value tell that the student have learn skill already or not)
+
+# {f"job name: {job_fulfillment['job_name']}"}
+
+# to guide student to learn in chronological order, please give short and useful description for each step, i will plot each step into learning path, please include the step that student have learn already too"""),
+#     ]
+
+#     config = types.GenerateContentConfig(
+#         response_mime_type="application/json",
+#         response_schema=genai.types.Schema(
+#             type = genai.types.Type.OBJECT,
+#             required = ["learning_paths"],
+#             properties = {
+#                 "learning_paths": genai.types.Schema(
+#                     type = genai.types.Type.ARRAY,
+#                     items = genai.types.Schema(
+#                         type = genai.types.Type.OBJECT,
+#                         required = ["learning_path", "job_name"],
+#                         properties = {
+#                             "learning_path": genai.types.Schema(
+#                                 type = genai.types.Type.ARRAY,
+#                                 items = genai.types.Schema(
+#                                     type = genai.types.Type.OBJECT,
+#                                     required = ["what_to_learn", "is_student_learn_this_already"],
+#                                     properties = {
+#                                         "what_to_learn": genai.types.Schema(
+#                                             type = genai.types.Type.STRING,
+#                                         ),
+#                                         "is_student_learn_this_already": genai.types.Schema(
+#                                             type = genai.types.Type.STRING,
+#                                         ),
+#                                     },
+#                                 ),
+#                             ),
+#                             "job_name": genai.types.Schema(
+#                                 type = genai.types.Type.STRING,
+#                             ),
+#                         },
+#                     ),
+#                 ),
+#             },
+#         ),
+#     )
+
+#     json_obj = llm_generate(chats, config)
+
+#     learning_path_dict = {
+#         o['name']: {
+#             'what_to_learn': o['what_to_learn'], 
+#             'is_student_learn_this_already': o['is_student_learn_this_already'],
+#         } for o in json_obj['learning_path']
+#     }
+
+#     return learning_path_dict

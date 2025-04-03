@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Pass - Learning Path Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <style>
+        /* Base styles */
+        body {
+            background-color: #111;
+            color: #eee;
+            font-family: sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            min-height: 100vh;
+            /* Add padding top equal to navbar height + desired space */
+            /* Adjust if navbar height changes */
+            /* padding-top: 80px;  */
+        }
+
+        /* Particles background styling */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Main content container - Adjusted Padding Top */
+        .content-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* Removed min-height: 100vh here as body padding handles initial view */
+            width: 100%;
+            /* Adjusted padding: Less top padding needed now body handles it */
+            padding: 20px 20px 40px 20px; /* Reduced top padding */
+            z-index: 1; /* Above particles, below navbar */
+            box-sizing: border-box;
+        }
+
+        /* Styling for containers holding inputs/tags */
+        .input-section-container {
+            background-color: rgba(31, 41, 55, 0.7);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Area where tags are displayed */
+        .tag-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            min-height: 30px;
+        }
+
+        /* Individual tag styling */
+        .tag {
+            background-color: #4f46e5;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, opacity 0.2s ease-in-out;
+            border: 1px solid transparent;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .tag:hover {
+            background-color: #ef4444;
+            transform: translateY(-1px);
+        }
+
+        /* Styling for the search input area */
+        .search-area {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+
+        #role-search-input {
+            flex-grow: 1;
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(55, 65, 81, 0.8);
+            color: #eee;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+         #role-search-input:focus {
+             border-color: #6366f1;
+             box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.4);
+         }
+
+        #add-role-button {
+            padding: 0.6rem 1rem;
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s ease-in-out;
+            white-space: nowrap;
+        }
+        #add-role-button:hover {
+            background-color: #4f46e5;
+        }
+
+
+        /* Styling specifically for the file input */
+        .file-input-container {
+            text-align: center;
+        }
+
+        input[type="file"] {
+            color: #cbd5e1;
+            font-size: 0.875rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: max-content;
+        }
+
+        input[type="file"]::file-selector-button {
+            background-color: #6366f1;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            margin-right: 1rem;
+            font-weight: 500;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background-color: #4f46e5;
+        }
+
+        /* Style for error messages */
+        .error-message {
+            color: #f87171;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 600;
+            min-height: 1.5rem;
+        }
+        .error-message.hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar sticky top-0 z-20 w-full bg-gray-900/80 backdrop-blur-md shadow-md mb-5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="/" class="text-white font-bold text-xl hover:text-indigo-300 transition duration-200">
+                        Knowledge Pass
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/" class="text-gray-300 hover:bg-gray-700/50 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200">Job Recommend</a>
+                        <a href="/learning_path_home" class="bg-indigo-600/80 text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Learning Path</a>
+                        </div>
+                </div>
+                 <div class="-mr-2 flex md:hidden">
+                    <button type="button" class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                      <span class="sr-only">Open main menu</span>
+                      <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                      </svg>
+                      <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+            </div>
+        </div>
+
+         <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              <a href="/" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
+              <a href="/learning_path_home" class="bg-indigo-600/80 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Learning Path</a>
+              </div>
+          </div>
+    </nav>
+    <div id="particles-js"></div> <div class="content-container">
+
+        <h1 class="text-5xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 animate-pulse pb-3">Learning Path Generator</h1>
+        <p class="text-xl text-gray-300 mb-10 text-center max-w-2xl">Enter your desired internship roles to discover a personalized learning path based on Software Engineering at Thammasat University curriculum.</p>
+
+        <form id="learning-path-form" method="POST" action="/learning_path/" enctype="multipart/form-data" class="w-full flex flex-col items-center">
+            {% csrf_token %} 
+            <div class="input-section-container w-full max-w-xl">
+                <label for="role-search-input" class="text-2xl font-semibold text-gray-100">Enter Desired Internship Role(s)</label>
+                <p class="text-xs text-gray-400 mt-1 mb-2">Search and add roles from the suggestions.</p>
+                <div class="search-area">
+                     <input type="text" id="role-search-input" list="role-suggestions" placeholder="e.g., Software Engineer, Data Analyst...">
+                     <datalist id="role-suggestions">
+                         </datalist>
+                     <button type="button" id="add-role-button">Add Role</button>
+                 </div>
+                 <div id="role-input-error" class="error-message hidden text-sm mt-2 text-left"></div>
+                 <div class="tag-area" id="roles-tag-area">
+                    </div>
+            </div>
+
+            <div class="input-section-container file-input-container w-full max-w-xl">
+                <label for="jd-upload" class="block text-xl font-semibold text-gray-100 mb-3">Upload Sample Job Description (Optional)</label>
+                <input type="file" id="jd-upload" name="job_description_file" accept=".pdf,.doc,.docx,.txt" class="block w-full cursor-pointer focus:outline-none">
+                <p class="text-xs text-gray-400 mt-2">Accepted formats: PDF, DOC, DOCX, TXT</p>
+            </div>
+
+            <div id="hidden-inputs"></div> <div id="form-error" class="error-message hidden"></div> <button type="submit" id="learning-path-button"
+                class="mt-6 px-10 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-xl font-bold rounded-lg shadow-lg hover:from-emerald-600 hover:to-teal-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-emerald-400">
+                Get Learning Path
+            </button>
+
+        </form>
+    </div> <script>
+        // --- Particles.js Initialization ---
+        particlesJS('particles-js', { /* ... Full Particle config object ... */
+            "particles": { "number": { "value": 250, "density": { "enable": true, "value_area": 900 } }, "color": { "value": ["#ff6b6b", "#4ecdc4", "#ffe66d", "#81ecec", "#6c5ce7"] }, "shape": { "type": "circle", "stroke": { "width": 1, "color": "#222" }, "polygon": { "nb_sides": 5 } }, "opacity": { "value": 0.8, "random": true, "anim": { "enable": true, "speed": 0.5, "opacity_min": 0.3, "sync": false } }, "size": { "value": 8, "random": true, "anim": { "enable": true, "speed": 2, "size_min": 1, "sync": false } }, "line_linked": { "enable": true, "distance": 130, "color": "#aaa", "opacity": 0.3, "width": 1 }, "move": { "enable": true, "speed": 2, "direction": "none", "random": true, "straight": false, "out_mode": "out", "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 } } }, "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "bubble": { "distance": 250, "size": 120, "duration": 0.6 }, "repulse": { "distance": 250, "duration": 0.6 }, "push": { "particles_nb": 6 }, "remove": { "particles_nb": 3 } } }, "retina_detect": true
+        });
+
+        // --- Sample Internship Role Data ---
+        const sampleRoles = [
+            'Backend (Travel) #1',
+            'Backend (FinTech) #2',
+            'Backend (Travel) #2',
+            'Infra (Travel) #1',
+            'QA (MedTech) #1',
+            'Fullstack (FinTech) #2',
+            'Fullstack (Bank) #1',
+            'Fullstack (FinTech) #1',
+            'Fullstack (Bank) #2',
+            'QA (FinTech) #1',
+            'Frontend (Consult) #1',
+            'Fullstack (EdTech) #1',
+            'Fullstack (Insurance) #1',
+            'Backend (Bank) #1',
+            'Backend (Bank) #2',
+            'PM (MedTech) #1',
+            'Fullstack (MedTech) #1'
+            
+        ];
+
+        // --- State Variables ---
+        const selectedRoles = new Set();
+
+        // --- DOM Element References ---
+        const roleSearchInput = document.getElementById('role-search-input');
+        const roleSuggestionsList = document.getElementById('role-suggestions');
+        const addRoleButton = document.getElementById('add-role-button');
+        const rolesTagArea = document.getElementById('roles-tag-area');
+        const learningPathForm = document.getElementById('learning-path-form');
+        const hiddenInputsContainer = document.getElementById('hidden-inputs');
+        const formErrorDiv = document.getElementById('form-error');
+        const roleInputErrorDiv = document.getElementById('role-input-error');
+
+
+        // --- Core Functions ---
+
+        /** Creates a tag element for a selected role */
+        function createRoleTagElement(roleText) {
+            const tag = document.createElement('span');
+            tag.classList.add('tag');
+            tag.textContent = roleText + ' \u00D7'; // Add 'x'
+            tag.dataset.value = roleText;
+            tag.addEventListener('click', () => {
+                selectedRoles.delete(roleText);
+                tag.remove();
+                updateHiddenInputs();
+                formErrorDiv.classList.add('hidden');
+            });
+            return tag;
+        }
+
+         /** Populates the datalist */
+        function populateRoleSuggestions() {
+            roleSuggestionsList.innerHTML = '';
+            sampleRoles.forEach(role => {
+                const option = document.createElement('option');
+                option.value = role;
+                roleSuggestionsList.appendChild(option);
+            });
+         }
+
+         /** Validates and adds a role */
+         function handleAddRole() {
+             const roleValue = roleSearchInput.value.trim();
+             roleInputErrorDiv.classList.add('hidden');
+             if (!roleValue) {
+                 roleInputErrorDiv.textContent = "Please enter a role.";
+                 roleInputErrorDiv.classList.remove('hidden'); return;
+             }
+             if (!sampleRoles.includes(roleValue)) {
+                 roleInputErrorDiv.textContent = `"${roleValue}" is not a recognized role. Please select from suggestions.`;
+                 roleInputErrorDiv.classList.remove('hidden'); return;
+             }
+             if (selectedRoles.has(roleValue)) {
+                 roleInputErrorDiv.textContent = `"${roleValue}" has already been added.`;
+                 roleInputErrorDiv.classList.remove('hidden');
+                 roleSearchInput.value = ''; return;
+             }
+             selectedRoles.add(roleValue);
+             const tagElement = createRoleTagElement(roleValue);
+             rolesTagArea.appendChild(tagElement);
+             updateHiddenInputs();
+             roleSearchInput.value = '';
+             formErrorDiv.classList.add('hidden');
+         }
+
+         /** Updates hidden input fields */
+         function updateHiddenInputs() {
+             hiddenInputsContainer.innerHTML = '';
+             selectedRoles.forEach(role => {
+                 const input = document.createElement('input');
+                 input.type = 'hidden';
+                 input.name = 'selected_roles';
+                 input.value = role;
+                 hiddenInputsContainer.appendChild(input);
+             });
+         }
+
+
+        // --- Event Listeners ---
+        addRoleButton.addEventListener('click', handleAddRole);
+        roleSearchInput.addEventListener('keypress', function(event) {
+             if (event.key === 'Enter') { event.preventDefault(); handleAddRole(); }
+         });
+
+        learningPathForm.addEventListener('submit', function(event) {
+            formErrorDiv.classList.add('hidden');
+            roleInputErrorDiv.classList.add('hidden');
+            if (selectedRoles.size === 0) {
+                event.preventDefault();
+                formErrorDiv.textContent = "Please add at least one desired internship role.";
+                formErrorDiv.classList.remove('hidden');
+                console.error("Form submission prevented: No roles selected.");
+                formErrorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            console.log("Form validation passed. Submitting roles:", Array.from(selectedRoles));
+        });
+
+
+        // --- Initialization Code ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateRoleSuggestions();
+
+            // --- Navbar Mobile Menu Toggle ---
+            const mobileMenuButton = document.querySelector('nav button[aria-controls="mobile-menu"]');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const openIcon = mobileMenuButton.querySelector('svg.block'); // Menu icon
+            const closeIcon = mobileMenuButton.querySelector('svg.hidden'); // X icon
+
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', () => {
+                    const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+                    mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+                    mobileMenu.classList.toggle('hidden'); // Toggle menu visibility
+                    openIcon.classList.toggle('hidden'); // Toggle menu icon
+                    closeIcon.classList.toggle('hidden'); // Toggle X icon
+                });
+            }
+
+            console.log("Learning Path Generator form initialized.");
+        });
+
+    </script>
+
+</body>
+</html>

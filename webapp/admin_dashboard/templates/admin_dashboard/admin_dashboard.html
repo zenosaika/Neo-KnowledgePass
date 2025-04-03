@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Knowledge Graph</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <style>
+        /* Base styles - Inherited from reference */
+        body {
+            background-color: #111;
+            color: #eee;
+            font-family: sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* Particles background styling */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Main content container */
+        .content-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 20px 20px 40px 20px; /* Adjust as needed */
+            z-index: 1; /* Above particles, below navbar */
+            box-sizing: border-box;
+        }
+
+        /* Styling for containers like search or modal */
+        .section-container {
+            background-color: rgba(31, 41, 55, 0.7); /* Darker semi-transparent background */
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Search input styling */
+         #entity-search-input {
+            flex-grow: 1;
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(55, 65, 81, 0.8);
+            color: #eee;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+         }
+         #entity-search-input:focus {
+             border-color: #6366f1; /* Indigo focus */
+             box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.4);
+         }
+
+        /* --- Entity Card Styling --- */
+        .entity-card {
+            position: relative; /* Needed for absolute positioning of type label */
+            background-color: rgba(31, 41, 55, 0.65); /* Slightly adjusted opacity */
+            border: 1px solid rgba(255, 255, 255, 0.08); /* Subtle default border */
+            border-radius: 10px;
+            padding: 1.25rem; /* p-5 */
+            padding-top: 2rem; /* pt-8 - Increased top padding for the absolute label */
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden; /* Prevent border highlight bleeding on hover */
+        }
+        .entity-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.15); /* Slightly brighter border on hover */
+        }
+        /* Type-specific left border highlights */
+        .entity-card-course {
+            border-left: 4px solid #4f46e5; /* Indigo */
+        }
+        .entity-card-job {
+            border-left: 4px solid #10b981; /* Emerald */
+        }
+        /* Style for the absolute positioned type label */
+        .entity-type-label {
+            position: absolute;
+            top: 0.5rem; /* Adjust as needed */
+            right: 0.75rem; /* Adjust as needed */
+            font-size: 0.7rem; /* text-[11px] */
+            font-weight: 600; /* semibold */
+            text-transform: uppercase;
+            color: #9ca3af; /* gray-400 */
+            letter-spacing: 0.05em;
+            padding: 0.1rem 0.4rem;
+            background-color: rgba(55, 65, 81, 0.6); /* gray-700 with opacity */
+            border-radius: 4px;
+        }
+        /* --- End Entity Card Styling --- */
+
+        /* Button Styles (Edit/Delete/Create/Add) */
+        .action-button {
+            padding: 0.4rem 0.8rem; /* Smaller padding */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.8rem; /* Smaller font */
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+            white-space: nowrap;
+        }
+        .action-button:hover { transform: scale(1.05); }
+        .edit-button { background-color: #f59e0b; } /* Amber */
+        .edit-button:hover { background-color: #d97706; }
+        .delete-button { background-color: #ef4444; } /* Red */
+        .delete-button:hover { background-color: #dc2626; }
+        .create-button, #add-entity-submit-button { /* Larger buttons */
+            padding: 0.6rem 1.2rem; font-size: 0.9rem; background-color: #10b981; /* Emerald */
+        }
+        .create-button:hover, #add-entity-submit-button:hover { background-color: #059669; }
+        #cancel-modal-button {
+             padding: 0.6rem 1.2rem; font-size: 0.9rem; background-color: #6b7280; /* Gray */
+        }
+         #cancel-modal-button:hover { background-color: #4b5563; }
+
+        /* Modal Styling */
+        #create-modal {
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        #create-modal.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        #create-modal:not(.hidden) {
+            opacity: 1;
+            visibility: visible;
+        }
+         .modal-content {
+             background-color: #1f2937; /* gray-800 */
+             border: 1px solid rgba(255, 255, 255, 0.15);
+             max-height: 90vh; /* Limit height */
+             overflow-y: auto; /* Allow scrolling if content overflows */
+         }
+
+         /* File Input Styling - Adapted from reference */
+        input[type="file"] {
+            color: #cbd5e1;
+            font-size: 0.875rem;
+            display: block;
+            width: 100%; /* Make it full width within container */
+            max-width: none;
+        }
+        input[type="file"]::file-selector-button {
+            background-color: #6366f1; /* Indigo */
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            margin-right: 1rem;
+            font-weight: 500;
+        }
+        input[type="file"]::file-selector-button:hover {
+            background-color: #4f46e5;
+        }
+
+        /* Form input general styling */
+        .form-input, .form-textarea, .form-select {
+             width: 100%;
+             padding: 0.6rem 0.8rem;
+             border-radius: 6px;
+             border: 1px solid rgba(255, 255, 255, 0.2);
+             background-color: rgba(55, 65, 81, 0.8); /* gray-700ish */
+             color: #eee;
+             font-size: 0.9rem;
+             outline: none;
+             transition: border-color 0.2s ease, box-shadow 0.2s ease;
+             margin-top: 0.25rem; /* Add some space below label */
+         }
+         .form-input:focus, .form-textarea:focus, .form-select:focus {
+             border-color: #6366f1; /* Indigo focus */
+             box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.4);
+         }
+         .form-label {
+             display: block;
+             font-weight: 500; /* medium */
+             color: #d1d5db; /* gray-300 */
+             margin-bottom: 0.25rem;
+             font-size: 0.9rem;
+         }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar sticky top-0 z-20 w-full bg-gray-900/80 backdrop-blur-md shadow-md mb-5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="/" class="text-white font-bold text-xl hover:text-indigo-300 transition duration-200">
+                        Knowledge Pass
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/" class="text-gray-300 hover:bg-gray-700/50 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200">Job Recommend</a>
+                        <a href="/learning_path_home" class="text-gray-300 hover:bg-gray-700/50 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200">Learning Path</a>
+                         <a href="/admin" class="bg-indigo-600/80 text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Admin Dashboard</a>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" id="mobile-menu-button" class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                      <span class="sr-only">Open main menu</span>
+                      <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                      </svg>
+                      <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+            </div>
+        </div>
+         <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              <a href="/" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Job Recommend</a>
+              <a href="/learning_path_home" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Learning Path</a>
+              <a href="/admin" class="bg-indigo-600/80 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Admin Dashboard</a>
+              </div>
+          </div>
+    </nav>
+
+    <div id="particles-js"></div>
+
+    <div class="content-container">
+
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 animate-pulse pb-2">Admin Dashboard</h1>
+        <p class="text-lg text-gray-300 mb-8 text-center max-w-3xl">Manage Knowledge Graph Entities (Courses & Jobs)</p>
+
+        <div class="w-full max-w-4xl mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+             <button id="create-entity-button" class="action-button create-button order-1 md:order-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1 -mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                </svg>
+                Create New Entity
+            </button>
+
+            <div class="section-container !p-4 !mb-0 w-full md:w-auto flex-grow order-2 md:order-1">
+                <label for="entity-search-input" class="sr-only">Search Entities</label>
+                <div class="flex gap-2 items-center">
+                     <input type="search" id="entity-search-input" list="entity-suggestions" placeholder="Search entities by name (e.g., Python Programming, Software Engineer)...">
+                     <datalist id="entity-suggestions">
+                         </datalist>
+                     <button aria-label="Search" class="p-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white transition duration-200">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                         </svg>
+                     </button>
+                 </div>
+            </div>
+        </div>
+
+
+        <div id="entity-display-area" class="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+            </div>
+
+    </div> <div id="create-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-30 p-4">
+        <div class="modal-content section-container !mt-0 !mb-0 relative w-full max-w-lg rounded-xl">
+             <div class="flex justify-between items-center mb-5 pb-3 border-b border-gray-600">
+                <h2 id="modal-title" class="text-2xl font-semibold text-gray-100">Create New Entity</h2>
+                <button id="close-modal-button" class="text-gray-400 hover:text-white transition-colors" aria-label="Close modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+             <form id="create-entity-form">
+                 <input type="hidden" id="entity-id-input" name="entity_id"> <div class="mb-4">
+                     <label for="entity-name" class="form-label">Entity Name</label>
+                     <input type="text" id="entity-name" name="entity_name" class="form-input" placeholder="e.g., Advanced Algorithms, Data Scientist" required>
+                 </div>
+
+                 <div class="mb-4">
+                     <label for="entity-type" class="form-label">Entity Type</label>
+                     <select id="entity-type" name="entity_type" class="form-select" required>
+                         <option value="" disabled selected>Select type...</option>
+                         <option value="Course">Course</option>
+                         <option value="Job">Job</option>
+                         </select>
+                 </div>
+
+                 <div class="mb-4">
+                     <label for="entity-description" class="form-label">Description</label>
+                     <textarea id="entity-description" name="entity_description" rows="4" class="form-textarea" placeholder="Provide a brief description..."></textarea>
+                 </div>
+
+                 <div class="mb-6">
+                     <label for="entity-file" class="form-label">Upload Supporting File (Optional)</label>
+                     <input type="file" id="entity-file" name="entity_file" accept=".pdf,.doc,.docx,.txt,.zip,.rar" class="block w-full cursor-pointer focus:outline-none">
+                    <p class="text-xs text-gray-400 mt-1">Accepted formats: PDF, DOC(X), TXT, ZIP, RAR</p>
+                 </div>
+
+                 <div id="form-error-modal" class="text-red-400 text-sm mb-4 hidden"></div>
+
+                 <div class="flex justify-end space-x-3 pt-4 border-t border-gray-600">
+                     <button type="button" id="cancel-modal-button" class="action-button">Cancel</button>
+                     <button type="submit" id="add-entity-submit-button" class="action-button">
+                         Add to Knowledge Graph
+                     </button>
+                 </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        // --- Particles.js Initialization ---
+        particlesJS('particles-js', { /* ... Full Particle config object ... */
+            "particles": { "number": { "value": 250, "density": { "enable": true, "value_area": 900 } }, "color": { "value": ["#ff6b6b", "#4ecdc4", "#ffe66d", "#81ecec", "#6c5ce7"] }, "shape": { "type": "circle", "stroke": { "width": 1, "color": "#222" }, "polygon": { "nb_sides": 5 } }, "opacity": { "value": 0.8, "random": true, "anim": { "enable": true, "speed": 0.5, "opacity_min": 0.3, "sync": false } }, "size": { "value": 8, "random": true, "anim": { "enable": true, "speed": 2, "size_min": 1, "sync": false } }, "line_linked": { "enable": true, "distance": 130, "color": "#aaa", "opacity": 0.3, "width": 1 }, "move": { "enable": true, "speed": 2, "direction": "none", "random": true, "straight": false, "out_mode": "out", "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 } } }, "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "bubble": { "distance": 250, "size": 120, "duration": 0.6 }, "repulse": { "distance": 250, "duration": 0.6 }, "push": { "particles_nb": 6 }, "remove": { "particles_nb": 3 } } }, "retina_detect": true
+        });
+
+        // --- Sample Entity Data (Replace with actual data source/API call) ---
+        const sampleEntities = [
+            { id: 'crs001', name: 'Introduction to Programming', type: 'Course', description: 'Fundamentals of programming concepts using Python. Covers variables, control flow, functions, and basic data structures.' },
+            { id: 'crs002', name: 'Data Structures and Algorithms', type: 'Course', description: 'Study of fundamental data structures like arrays, linked lists, trees, graphs, and essential algorithms.' },
+            { id: 'job001', name: 'Software Engineer Intern', type: 'Job', description: 'Assist in developing, testing, and deploying software applications. Requires knowledge of data structures and algorithms.' },
+            { id: 'crs003', name: 'Database Systems', type: 'Course', description: 'Covers relational database design, SQL, normalization, and transaction management.' },
+            { id: 'job002', name: 'Data Analyst Intern', type: 'Job', description: 'Analyze datasets to extract meaningful insights, create visualizations, and report findings. SQL and Python knowledge preferred.' },
+            { id: 'crs004', name: 'Web Development Basics', type: 'Course', description: 'Introduction to HTML, CSS, and JavaScript for building client-side web applications.' },
+            { id: 'job003', name: 'Frontend Developer Intern', type: 'Job', description: 'Develop user interfaces using HTML, CSS, JavaScript, and potentially frameworks like React or Vue.' },
+            { id: 'crs005', name: 'Object-Oriented Programming', type: 'Course', description: 'Principles of OOP including encapsulation, inheritance, and polymorphism, often taught using Java or C++.'},
+             { id: 'job004', name: 'Backend Developer Intern', type: 'Job', description: 'Work on server-side logic, databases, and APIs using languages like Node.js, Python (Django/Flask), Java (Spring), etc.'}
+        ];
+
+        // --- DOM Element References ---
+        const entitySearchInput = document.getElementById('entity-search-input');
+        const entitySuggestionsList = document.getElementById('entity-suggestions');
+        const entityDisplayArea = document.getElementById('entity-display-area');
+        const createEntityButton = document.getElementById('create-entity-button');
+        const createModal = document.getElementById('create-modal');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const cancelModalButton = document.getElementById('cancel-modal-button');
+        const createEntityForm = document.getElementById('create-entity-form');
+        const modalTitle = document.getElementById('modal-title');
+        const formErrorModalDiv = document.getElementById('form-error-modal');
+        const entityIdInput = document.getElementById('entity-id-input'); // Hidden input for editing
+        const addEntitySubmitButton = document.getElementById('add-entity-submit-button');
+
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+
+        // --- Core Functions ---
+
+        /** Populates the datalist for search suggestions */
+        function populateEntitySuggestions() {
+            // In a real app, this might fetch from an API endpoint
+            entitySuggestionsList.innerHTML = ''; // Clear existing
+            sampleEntities.forEach(entity => {
+                const option = document.createElement('option');
+                option.value = entity.name;
+                entitySuggestionsList.appendChild(option);
+            });
+        }
+
+        /** --- UPDATED: Creates an HTML card element for an entity --- */
+        function createEntityCard(entity) {
+            const card = document.createElement('div');
+            // Add relative for positioning context of the label
+            card.classList.add('entity-card', 'relative');
+            card.dataset.entityId = entity.id;
+
+            const typeClass = entity.type.toLowerCase(); // 'course' or 'job'
+            const typeColorClass = typeClass === 'course' ? 'text-indigo-300' : 'text-emerald-300';
+
+            // Add type-specific border class
+            if (typeClass === 'course') {
+                card.classList.add('entity-card-course');
+            } else if (typeClass === 'job') {
+                card.classList.add('entity-card-job');
+            }
+            // NOTE: Added pt-8 to entity-card class in CSS instead of here
+
+            card.innerHTML = `
+                <span class="entity-type-label">${escapeHTML(entity.type)}</span>
+
+                <div>
+                    <h3 class="text-lg font-semibold ${typeColorClass} mb-1"> ${escapeHTML(entity.name)}
+                    </h3>
+                    <p class="text-sm text-gray-400 mt-2 leading-relaxed">${escapeHTML(entity.description) || 'No description available.'}</p>
+                </div>
+
+                <div class="flex justify-end space-x-2 mt-4 pt-3 border-t border-gray-700/50"> <button class="action-button edit-button" data-id="${entity.id}">Edit</button>
+                    <button class="action-button delete-button" data-id="${entity.id}">Delete</button>
+                </div>
+            `;
+            return card;
+        }
+        /** --- End of UPDATED function --- */
+
+         /** Displays entities in the grid */
+        function displayEntities(entitiesToDisplay) {
+             entityDisplayArea.innerHTML = ''; // Clear current cards
+             if (!entitiesToDisplay || entitiesToDisplay.length === 0) {
+                 entityDisplayArea.innerHTML = `<p class="text-gray-400 italic md:col-span-2 lg:col-span-3 text-center">No entities found matching your criteria.</p>`;
+                 return;
+             }
+             entitiesToDisplay.forEach(entity => {
+                 const card = createEntityCard(entity);
+                 entityDisplayArea.appendChild(card);
+             });
+         }
+
+         /** Filters entities based on search input */
+         function filterEntities() {
+            const searchTerm = entitySearchInput.value.toLowerCase().trim();
+            if (!searchTerm) {
+                // Show random subset or all if search is empty
+                displayEntities(sampleEntities); // Or shuffle/slice for random
+                return;
+            }
+
+            // In a real app, you might debounce this or query an API
+            const filtered = sampleEntities.filter(entity =>
+                entity.name.toLowerCase().includes(searchTerm) ||
+                entity.description.toLowerCase().includes(searchTerm)
+            );
+            displayEntities(filtered);
+        }
+
+        /** Opens the modal for creating or editing */
+        function openModal(mode = 'create', entityData = null) {
+             createEntityForm.reset(); // Clear previous data
+             formErrorModalDiv.classList.add('hidden'); // Hide errors
+             entityIdInput.value = ''; // Clear hidden ID field
+             addEntitySubmitButton.textContent = 'Add to Knowledge Graph'; // Default button text
+
+             if (mode === 'edit' && entityData) {
+                 modalTitle.textContent = 'Edit Entity';
+                 addEntitySubmitButton.textContent = 'Update Entity';
+                 // Populate form with existing data
+                 entityIdInput.value = entityData.id;
+                 document.getElementById('entity-name').value = entityData.name;
+                 document.getElementById('entity-type').value = entityData.type;
+                 document.getElementById('entity-description').value = entityData.description;
+                 // Note: File input cannot be programmatically pre-filled for security reasons.
+                 // User must re-select file if they want to change/add one during edit.
+
+             } else {
+                  modalTitle.textContent = 'Create New Entity';
+             }
+             createModal.classList.remove('hidden');
+             document.body.style.overflow = 'hidden'; // Prevent background scrolling
+         }
+
+        /** Closes the modal */
+        function closeModal() {
+             createModal.classList.add('hidden');
+             document.body.style.overflow = ''; // Restore background scrolling
+         }
+
+        /** Handles form submission (Create/Update) */
+        async function handleFormSubmit(event) {
+             event.preventDefault();
+             formErrorModalDiv.classList.add('hidden');
+
+             const formData = new FormData(createEntityForm);
+             const entityId = formData.get('entity_id'); // Will be empty for create, non-empty for edit
+             const isEditMode = !!entityId;
+
+             // Basic validation (can be more robust)
+             if (!formData.get('entity_name') || !formData.get('entity_type')) {
+                 formErrorModalDiv.textContent = 'Entity Name and Type are required.';
+                 formErrorModalDiv.classList.remove('hidden');
+                 return;
+             }
+
+             console.log("Form data prepared for submission:");
+             for (let [key, value] of formData.entries()) {
+                // Don't log file content, just its presence/name
+                if (value instanceof File) {
+                    console.log(`${key}: ${value.name} (size: ${value.size} bytes)`);
+                } else {
+                    console.log(`${key}: ${value}`);
+                }
+             }
+
+             // --- !!! Placeholder for API Call !!! ---
+             try {
+                 addEntitySubmitButton.disabled = true; // Prevent double-click
+                 addEntitySubmitButton.textContent = isEditMode ? 'Updating...' : 'Adding...';
+
+                 // Simulate API delay
+                 await new Promise(resolve => setTimeout(resolve, 1000));
+
+                 if (isEditMode) {
+                     console.log(`--- Pretending to send UPDATE request for entity ID: ${entityId} ---`);
+                     // Find index and update in sample data (for demo purposes)
+                     const index = sampleEntities.findIndex(e => e.id === entityId);
+                     if (index !== -1) {
+                         sampleEntities[index] = {
+                            id: entityId,
+                            name: formData.get('entity_name'),
+                            type: formData.get('entity_type'),
+                            description: formData.get('entity_description')
+                            // Note: File handling would be managed by backend
+                         };
+                         console.log("Entity updated in local sample data.");
+                     }
+                 } else {
+                     console.log("--- Pretending to send CREATE request ---");
+                     // Create new entity object and add to sample data (for demo)
+                     const newId = `ent${Date.now()}`; // Simple unique ID for demo
+                     const newEntity = {
+                         id: newId,
+                         name: formData.get('entity_name'),
+                         type: formData.get('entity_type'),
+                         description: formData.get('entity_description')
+                     };
+                     sampleEntities.push(newEntity);
+                     console.log("New entity added to local sample data with ID:", newId);
+                 }
+
+                 // --- End Placeholder ---
+
+                 closeModal();
+                 filterEntities(); // Refresh the displayed list
+                 populateEntitySuggestions(); // Update suggestions if name changed/added
+
+             } catch (error) {
+                 console.error("Error submitting form:", error);
+                 formErrorModalDiv.textContent = `An error occurred: ${error.message || 'Please try again.'}`;
+                 formErrorModalDiv.classList.remove('hidden');
+             } finally {
+                 addEntitySubmitButton.disabled = false;
+                 addEntitySubmitButton.textContent = isEditMode ? 'Update Entity' : 'Add to Knowledge Graph';
+             }
+        }
+
+        /** Handle clicks on Edit/Delete buttons (using event delegation) */
+        function handleActionClick(event) {
+            const target = event.target;
+            const entityId = target.dataset.id;
+
+            if (!entityId) return; // Click wasn't on a button with data-id
+
+            if (target.classList.contains('edit-button')) {
+                // --- Handle Edit ---
+                console.log("Edit button clicked for ID:", entityId);
+                const entityData = sampleEntities.find(e => e.id === entityId);
+                if (entityData) {
+                    openModal('edit', entityData);
+                } else {
+                    console.error("Could not find entity data for ID:", entityId);
+                    alert("Error: Could not find entity data to edit.");
+                }
+
+            } else if (target.classList.contains('delete-button')) {
+                // --- Handle Delete ---
+                console.log("Delete button clicked for ID:", entityId);
+                const entity = sampleEntities.find(e => e.id === entityId);
+                if (!entity) return;
+
+                if (confirm(`Are you sure you want to delete "${entity.name}"?`)) {
+                    console.log(`--- Pretending to send DELETE request for entity ID: ${entityId} ---`);
+                    // --- !!! Placeholder for API Call !!! ---
+                    // Simulate success: Remove from local data and update UI
+                    const index = sampleEntities.findIndex(e => e.id === entityId);
+                    if (index > -1) {
+                        sampleEntities.splice(index, 1);
+                        console.log("Entity removed from local sample data.");
+                        filterEntities(); // Refresh display
+                        populateEntitySuggestions(); // Update suggestions
+                    }
+                     // --- End Placeholder ---
+                }
+            }
+        }
+
+         // Utility to escape HTML to prevent XSS if descriptions contain HTML
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag] || tag));
+        }
+
+        // --- Event Listeners ---
+        entitySearchInput.addEventListener('input', filterEntities);
+        createEntityButton.addEventListener('click', () => openModal('create'));
+        closeModalButton.addEventListener('click', closeModal);
+        cancelModalButton.addEventListener('click', closeModal);
+        createModal.addEventListener('click', (event) => { // Close if clicked outside content
+             if (event.target === createModal) {
+                 closeModal();
+             }
+        });
+        createEntityForm.addEventListener('submit', handleFormSubmit);
+
+        // Event delegation for Edit/Delete buttons
+        entityDisplayArea.addEventListener('click', handleActionClick);
+
+
+        // --- Navbar Mobile Menu Toggle ---
+        if (mobileMenuButton && mobileMenu) {
+            const openIcon = mobileMenuButton.querySelector('svg.block');
+            const closeIcon = mobileMenuButton.querySelector('svg.hidden');
+            mobileMenuButton.addEventListener('click', () => {
+                const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+                mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+                mobileMenu.classList.toggle('hidden');
+                openIcon.classList.toggle('hidden');
+                closeIcon.classList.toggle('hidden');
+            });
+        }
+
+
+        // --- Initialization Code ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateEntitySuggestions();
+            displayEntities(sampleEntities); // Display initial set of entities
+            console.log("Admin Dashboard Initialized.");
+        });
+
+    </script>
+
+</body>
+</html>

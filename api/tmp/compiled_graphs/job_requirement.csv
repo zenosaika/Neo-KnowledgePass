@@ -1,0 +1,624 @@
+job,skill
+Backend (Travel) #1,English Communication
+Backend (Travel) #1,Data Requirements
+Backend (Travel) #1,System Scaling
+Backend (Travel) #1,Computer Science
+Backend (Travel) #1,Deployment
+Backend (Travel) #1,Continuous Integration
+Backend (Travel) #1,Puppet
+Backend (Travel) #1,TeamCity
+Backend (Travel) #1,Git
+Backend (Travel) #1,Hadoop
+Backend (Travel) #1,Cassandra
+Backend (Travel) #1,MS SQL
+Backend (Travel) #1,Non-Relational Databases
+Backend (Travel) #1,Relational Databases
+Backend (Travel) #1,Functional Programming
+Backend (Travel) #1,Object-Oriented Programming
+Backend (Travel) #1,Codebase
+Backend (Travel) #1,Back End
+Backend (Travel) #1,Full Stack
+Backend (Travel) #1,Agile Development
+Backend (Travel) #1,Spark
+Backend (Travel) #1,Kafka
+Backend (Travel) #1,C#
+Backend (Travel) #1,Scala
+Backend (Travel) #1,Self-Healing Systems
+Backend (Travel) #1,Testing Techniques
+Backend (Travel) #1,CI/CD
+Backend (Travel) #1,Payments
+Backend (Travel) #1,Booking Systems
+Backend (Travel) #1,Partner Data
+Backend (Travel) #1,Communications
+Backend (Travel) #1,Customer Data
+Backend (Travel) #1,Product Information
+Backend (Travel) #1,Inventory and Pricing
+Backend (Travel) #1,APIs
+Backend (Travel) #1,Fault-Tolerant Systems
+Backend (Travel) #1,Scalable Systems
+Backend (Travel) #1,Back End Engineering
+Backend (FinTech) #2,DevOps
+Backend (FinTech) #2,Financial Services
+Backend (FinTech) #2,Banking
+Backend (FinTech) #2,Unit Test
+Backend (FinTech) #2,Jenkins
+Backend (FinTech) #2,CI/CD Pipelines
+Backend (FinTech) #2,Microservices
+Backend (FinTech) #2,PostgreSQL
+Backend (FinTech) #2,SQL
+Backend (FinTech) #2,Oracle
+Backend (FinTech) #2,OpenShift
+Backend (FinTech) #2,Migration Projects
+Backend (FinTech) #2,Technology Modernization
+Backend (FinTech) #2,Production Issues
+Backend (FinTech) #2,IT
+Backend (FinTech) #2,Banking System Enhancement
+Backend (FinTech) #2,API
+Backend (FinTech) #2,Spring Boot
+Backend (FinTech) #2,Java
+Backend (FinTech) #2,Software Engineer
+Backend (Travel) #2,Version Control Systems
+Backend (Travel) #2,Databases
+Backend (Travel) #2,SQL
+Backend (Travel) #2,Java
+Backend (Travel) #2,JavaScript
+Backend (Travel) #2,Python
+Backend (Travel) #2,Emerging Technologies
+Backend (Travel) #2,Coding Standards
+Backend (Travel) #2,Code Reviews
+Backend (Travel) #2,Debugging
+Backend (Travel) #2,Troubleshooting
+Backend (Travel) #2,Technical Designs
+Backend (Travel) #2,Software Solutions
+Backend (Travel) #2,Git
+Backend (Travel) #2,Contract Software Developer
+Backend (Travel) #2,Software Integrations
+Backend (Travel) #2,Software Development
+Backend (Travel) #2,Agile Development
+Backend (Travel) #2,Spark
+Backend (Travel) #2,Kafka
+Backend (Travel) #2,C#
+Backend (Travel) #2,Scala
+Backend (Travel) #2,Self-Healing Systems
+Backend (Travel) #2,Testing Techniques
+Backend (Travel) #2,CI/CD
+Backend (Travel) #2,Payments
+Backend (Travel) #2,Booking Systems
+Backend (Travel) #2,Partner Data
+Backend (Travel) #2,Communications
+Backend (Travel) #2,Customer Data
+Backend (Travel) #2,Product Information
+Backend (Travel) #2,Inventory and Pricing
+Backend (Travel) #2,APIs
+Backend (Travel) #2,Fault-Tolerant Systems
+Backend (Travel) #2,Scalable Systems
+Backend (Travel) #2,Back End Engineering
+Infra (Travel) #1,Fault-tolerant Systems
+Infra (Travel) #1,Infrastructure Platform Development
+Infra (Travel) #1,Agoda Services
+Infra (Travel) #1,Kubernetes Clusters
+Infra (Travel) #1,Virtualization
+Infra (Travel) #1,Multi-tenant Compute Platforms
+Infra (Travel) #1,Software-defined Networking
+Infra (Travel) #1,Software-defined Storage
+Infra (Travel) #1,Kubernetes Operators
+Infra (Travel) #1,Bare Metal Provisioning
+Infra (Travel) #1,OpenStack Private Clouds
+Infra (Travel) #1,OpenTelemetry
+Infra (Travel) #1,Scalable Solutions
+Infra (Travel) #1,Reliable Solutions
+Infra (Travel) #1,Automated Solutions
+Infra (Travel) #1,Infrastructure Platform
+Infra (Travel) #1,Infrastructure Management System
+Infra (Travel) #1,OpenStack
+Infra (Travel) #1,Ceph
+Infra (Travel) #1,Kubernetes
+Infra (Travel) #1,Infrastructure System Management
+Infra (Travel) #1,Modern Technologies
+Infra (Travel) #1,Platform Infrastructure
+Infra (Travel) #1,Scaling
+Infra (Travel) #1,Reliability
+Infra (Travel) #1,Automation
+Infra (Travel) #1,Performance Issues
+Infra (Travel) #1,Performance Tuning
+Infra (Travel) #1,Optimization
+Infra (Travel) #1,Computer Science
+Infra (Travel) #1,Programming
+Infra (Travel) #1,Python
+Infra (Travel) #1,Go
+Infra (Travel) #1,Git
+Infra (Travel) #1,Docker
+Infra (Travel) #1,Linux Command Line
+Infra (Travel) #1,Bash Scripting
+Infra (Travel) #1,CI/CD Systems
+Infra (Travel) #1,GitLab
+Infra (Travel) #1,GitHub Actions
+Infra (Travel) #1,CI/CD Pipelines
+Infra (Travel) #1,Configuration as Code
+Infra (Travel) #1,YAML
+Infra (Travel) #1,Bash
+Infra (Travel) #1,Hardware Management APIs
+Infra (Travel) #1,Redfish
+Infra (Travel) #1,ILO
+Infra (Travel) #1,DRAC
+Infra (Travel) #1,Physical Architecture
+Infra (Travel) #1,Resilient Systems
+Infra (Travel) #1,Highly Available Systems
+QA (MedTech) #1,CI/CD Pipelines
+QA (MedTech) #1,Domain-Driven Design
+QA (MedTech) #1,Agile Development Frameworks
+QA (MedTech) #1,Rebalance
+QA (MedTech) #1,Auto-DCA
+QA (MedTech) #1,Trading Strategies
+QA (MedTech) #1,Trading Operations
+QA (MedTech) #1,Fintech
+QA (MedTech) #1,Test Automation Scripts
+QA (MedTech) #1,Prompt Engineering
+QA (MedTech) #1,AI-Assisted Test Case Generation
+QA (MedTech) #1,Continuous Testing
+QA (MedTech) #1,DevOps Workflows
+QA (MedTech) #1,Software QA Engineer
+QA (MedTech) #1,Contract
+QA (MedTech) #1,Digital Asset Trading Platform
+QA (MedTech) #1,Test Strategies
+QA (MedTech) #1,Automation Frameworks
+QA (MedTech) #1,Quality Standards
+QA (MedTech) #1,Test Planning
+QA (MedTech) #1,Test Execution
+QA (MedTech) #1,QA Technologies
+QA (MedTech) #1,Risk Assessments
+QA (MedTech) #1,Test Cases
+QA (MedTech) #1,Functional Testing
+QA (MedTech) #1,Integration Testing
+QA (MedTech) #1,Performance Testing
+QA (MedTech) #1,Test Execution Efficiency
+QA (MedTech) #1,Automation Coverage
+QA (MedTech) #1,Defect Analysis
+QA (MedTech) #1,Software Defects
+QA (MedTech) #1,Security Vulnerabilities
+QA (MedTech) #1,Testing Methodologies
+QA (MedTech) #1,Automation Reliability
+QA (MedTech) #1,Bug Detection Accuracy
+QA (MedTech) #1,Production Environment
+QA (MedTech) #1,Software Testing Lifecycle
+QA (MedTech) #1,Automation Development
+QA (MedTech) #1,Defect Management
+QA (MedTech) #1,Playwright
+QA (MedTech) #1,TypeScript
+QA (MedTech) #1,UI Testing
+QA (MedTech) #1,API Testing
+QA (MedTech) #1,K6
+QA (MedTech) #1,Load Tests
+QA (MedTech) #1,Stress Tests
+QA (MedTech) #1,Endurance Tests
+QA (MedTech) #1,System Performance
+QA (MedTech) #1,Software Testing Methodologies
+QA (MedTech) #1,Regression Testing
+QA (MedTech) #1,Exploratory Testing
+QA (MedTech) #1,Analytical Skills
+QA (MedTech) #1,Debugging Skills
+QA (MedTech) #1,Bug Reports
+QA (MedTech) #1,Event-Driven Architectures
+QA (MedTech) #1,Message Queues
+QA (MedTech) #1,RabbitMQ
+QA (MedTech) #1,Database Validation
+QA (MedTech) #1,Data Type Consistency
+QA (MedTech) #1,Data Migrations
+QA (MedTech) #1,Schema Evolution
+QA (MedTech) #1,MongoDB
+QA (MedTech) #1,PostgreSQL
+Fullstack (FinTech) #2,Jenkins
+Fullstack (FinTech) #2,Dockers
+Fullstack (FinTech) #2,CI/CD
+Fullstack (FinTech) #2,DevOps
+Fullstack (FinTech) #2,Cypress
+Fullstack (FinTech) #2,Acceptance Test
+Fullstack (FinTech) #2,Unit Test
+Fullstack (FinTech) #2,Automate Testing
+Fullstack (FinTech) #2,Scrum
+Fullstack (FinTech) #2,Agile Methodologies
+Fullstack (FinTech) #2,SQL
+Fullstack (FinTech) #2,Spring Boot
+Fullstack (FinTech) #2,React
+Fullstack (FinTech) #2,Angular
+Fullstack (FinTech) #2,.Net
+Fullstack (FinTech) #2,Java
+Fullstack (FinTech) #2,Registrar Systems
+Fullstack (FinTech) #2,Depository Systems
+Fullstack (FinTech) #2,Full Stack Developer
+Fullstack (Bank) #1,English
+Fullstack (Bank) #1,Communication Skills
+Fullstack (Bank) #1,Jenkins
+Fullstack (Bank) #1,Mockito
+Fullstack (Bank) #1,Tomcat
+Fullstack (Bank) #1,Apache
+Fullstack (Bank) #1,Git
+Fullstack (Bank) #1,JSON
+Fullstack (Bank) #1,Web Services
+Fullstack (Bank) #1,Web API
+Fullstack (Bank) #1,REST
+Fullstack (Bank) #1,TypeScript
+Fullstack (Bank) #1,JavaScript
+Fullstack (Bank) #1,CSS
+Fullstack (Bank) #1,HTML
+Fullstack (Bank) #1,Digital Customer Onboarding
+Fullstack (Bank) #1,Brokerage Operations
+Fullstack (Bank) #1,Financial Markets
+Fullstack (Bank) #1,CI/CD
+Fullstack (Bank) #1,Kubernetes
+Fullstack (Bank) #1,Helm
+Fullstack (Bank) #1,AWS
+Fullstack (Bank) #1,Microservices
+Fullstack (Bank) #1,Sybase database
+Fullstack (Bank) #1,Java Spring framework
+Fullstack (Bank) #1,Java Spring Boot
+Fullstack (Bank) #1,Client-Server Architecture
+Fullstack (Bank) #1,MVC
+Fullstack (Bank) #1,OOP
+Fullstack (Bank) #1,Source Code
+Fullstack (Bank) #1,Agile Methodology
+Fullstack (Bank) #1,ReactJS
+Fullstack (Bank) #1,Java
+Fullstack (Bank) #1,Software Developer
+Fullstack (FinTech) #1,React
+Fullstack (FinTech) #1,CSS
+Fullstack (FinTech) #1,Product Management
+Fullstack (FinTech) #1,Business Process
+Fullstack (FinTech) #1,Cloud Computing
+Fullstack (FinTech) #1,Software Configuration Management
+Fullstack (FinTech) #1,Programming Paradigm
+Fullstack (FinTech) #1,JavaScript Runtime Environment
+Fullstack (FinTech) #1,JavaScript Tooling
+Fullstack (FinTech) #1,JavaScript Library
+Fullstack (FinTech) #1,JavaScript Framework
+Fullstack (FinTech) #1,JavaScript Module Bundler
+Fullstack (FinTech) #1,Markup Language
+Fullstack (FinTech) #1,Mobile Technology
+Fullstack (FinTech) #1,Operating System
+Fullstack (FinTech) #1,Mobile Operating System
+Fullstack (FinTech) #1,Software Development
+Fullstack (FinTech) #1,Container Orchestration
+Fullstack (FinTech) #1,Project Management
+Fullstack (FinTech) #1,Agile Framework
+Fullstack (FinTech) #1,System Administration
+Fullstack (FinTech) #1,DevOps
+Fullstack (FinTech) #1,Containerization Technology
+Fullstack (FinTech) #1,Version Control System
+Fullstack (FinTech) #1,Caching Technology
+Fullstack (FinTech) #1,SQL
+Fullstack (FinTech) #1,NoSQL Database
+Fullstack (FinTech) #1,Database Management System
+Fullstack (FinTech) #1,Relational Database Management System
+Fullstack (FinTech) #1,Programming Framework
+Fullstack (FinTech) #1,Java Framework
+Fullstack (FinTech) #1,Programming Language
+Fullstack (FinTech) #1,API
+Fullstack (FinTech) #1,Testing
+Fullstack (FinTech) #1,Event Driven Architecture
+Fullstack (FinTech) #1,Asynchronous Programming
+Fullstack (FinTech) #1,HTML5
+Fullstack (FinTech) #1,Node.js
+Fullstack (FinTech) #1,Vue.js
+Fullstack (FinTech) #1,Redux
+Fullstack (FinTech) #1,Software Engineering
+Fullstack (FinTech) #1,Senior Software Engineer
+Fullstack (FinTech) #1,Backend Development
+Fullstack (FinTech) #1,Frontend Development
+Fullstack (FinTech) #1,FinTech
+Fullstack (FinTech) #1,e-Money Wallet
+Fullstack (FinTech) #1,e-Commerce
+Fullstack (FinTech) #1,Technical Design
+Fullstack (FinTech) #1,Software Application
+Fullstack (FinTech) #1,Code Development
+Fullstack (FinTech) #1,Component Test Execution
+Fullstack (FinTech) #1,System Architecture
+Fullstack (FinTech) #1,Performance Tuning
+Fullstack (FinTech) #1,Product Features
+Fullstack (FinTech) #1,Workflow
+Fullstack (FinTech) #1,Product Owner
+Fullstack (FinTech) #1,Project Manager
+Fullstack (FinTech) #1,Scrum Master
+Fullstack (FinTech) #1,Designer
+Fullstack (FinTech) #1,Backend Service
+Fullstack (FinTech) #1,Server Configuration
+Fullstack (FinTech) #1,Continuous Integration/Continuous Deployment
+Fullstack (FinTech) #1,Database
+Fullstack (FinTech) #1,API Design
+Fullstack (FinTech) #1,Web Application
+Fullstack (FinTech) #1,Client/Server Application
+Fullstack (FinTech) #1,RESTful API
+Fullstack (FinTech) #1,Java
+Fullstack (FinTech) #1,Spring Framework
+Fullstack (FinTech) #1,MySQL
+Fullstack (FinTech) #1,MongoDB
+Fullstack (FinTech) #1,Database Management
+Fullstack (FinTech) #1,Caching
+Fullstack (FinTech) #1,Redis
+Fullstack (FinTech) #1,Git
+Fullstack (FinTech) #1,Docker
+Fullstack (FinTech) #1,Cloud Platform
+Fullstack (FinTech) #1,Amazon Web Services
+Fullstack (FinTech) #1,SCRUM
+Fullstack (FinTech) #1,Agile
+Fullstack (FinTech) #1,Troubleshooting
+Fullstack (FinTech) #1,Kubernetes
+Fullstack (FinTech) #1,NoSQL
+Fullstack (FinTech) #1,Mobile Application Development
+Fullstack (FinTech) #1,iOS
+Fullstack (FinTech) #1,Android
+Fullstack (FinTech) #1,Huawei
+Fullstack (FinTech) #1,Responsive Web Design
+Fullstack (FinTech) #1,JavaScript
+Fullstack (FinTech) #1,Webpack
+Fullstack (Bank) #2,System Stability
+Fullstack (Bank) #2,System Performance
+Fullstack (Bank) #2,Production Support
+Fullstack (Bank) #2,Application Programs
+Fullstack (Bank) #2,Deployment
+Fullstack (Bank) #2,Testing
+Fullstack (Bank) #2,Coding
+Fullstack (Bank) #2,System Design
+Fullstack (Bank) #2,Technical Task Specification
+Fullstack (Bank) #2,Communication Skills
+Fullstack (Bank) #2,Teamwork
+Fullstack (Bank) #2,Problem Solving
+Fullstack (Bank) #2,Single Block Trade
+Fullstack (Bank) #2,Structure Note
+Fullstack (Bank) #2,Trading Business
+Fullstack (Bank) #2,Kubernetes
+Fullstack (Bank) #2,CI/CD
+Fullstack (Bank) #2,GO Development
+Fullstack (Bank) #2,React
+Fullstack (Bank) #2,Angular
+Fullstack (Bank) #2,Java
+Fullstack (Bank) #2,System Analysis
+Fullstack (Bank) #2,Financial Product
+Fullstack (Bank) #2,Full Stack Development
+QA (FinTech) #1,User Acceptance Test
+QA (FinTech) #1,System Integration Test
+QA (FinTech) #1,Selenium WebDriver
+QA (FinTech) #1,Cucumber
+QA (FinTech) #1,TestNG
+QA (FinTech) #1,Robot Framework
+QA (FinTech) #1,XCUITest
+QA (FinTech) #1,Espresso
+QA (FinTech) #1,Test Management Tools
+QA (FinTech) #1,JIRA
+QA (FinTech) #1,Performance Testing
+QA (FinTech) #1,Availability Testing
+QA (FinTech) #1,Usability Testing
+QA (FinTech) #1,Functional Testing
+QA (FinTech) #1,Continuous Deployment
+QA (FinTech) #1,Continuous Integration
+QA (FinTech) #1,DevOps
+QA (FinTech) #1,Test Automation
+QA (FinTech) #1,Software Test Automation Frameworks
+QA (FinTech) #1,Quality Assurance
+QA (FinTech) #1,Software Development Methodologies
+QA (FinTech) #1,Agile
+QA (FinTech) #1,Waterfall
+QA (FinTech) #1,Digital Transformation
+QA (FinTech) #1,Digital Banking
+Frontend (Consult) #1,Software application
+Frontend (Consult) #1,Web applications
+Frontend (Consult) #1,Mobile applications
+Frontend (Consult) #1,Style Sheet Language
+Frontend (Consult) #1,CSS3
+Frontend (Consult) #1,Markup Language
+Frontend (Consult) #1,HTML5
+Frontend (Consult) #1,Programming Language
+Frontend (Consult) #1,JavaScript
+Frontend (Consult) #1,Software Development
+Frontend (Consult) #1,TypeScript
+Frontend (Consult) #1,Cross-Browser Compatibility
+Frontend (Consult) #1,Scrum
+Frontend (Consult) #1,Agile Methodologies
+Frontend (Consult) #1,SEO
+Frontend (Consult) #1,Responsive Web Design
+Frontend (Consult) #1,Deployment
+Frontend (Consult) #1,CI/CD
+Frontend (Consult) #1,Git
+Frontend (Consult) #1,Version Control
+Frontend (Consult) #1,Cross-Platform Development
+Frontend (Consult) #1,Software Testing
+Frontend (Consult) #1,RESTful APIs
+Frontend (Consult) #1,Figma
+Frontend (Consult) #1,Prototyping
+Frontend (Consult) #1,UI
+Frontend (Consult) #1,UI/UX Design
+Frontend (Consult) #1,Web Development
+Frontend (Consult) #1,Zustand
+Frontend (Consult) #1,MobX
+Frontend (Consult) #1,Redux
+Frontend (Consult) #1,State Management
+Frontend (Consult) #1,Flutter
+Frontend (Consult) #1,React Native
+Frontend (Consult) #1,Mobile Development
+Frontend (Consult) #1,Next.js
+Frontend (Consult) #1,Angular
+Frontend (Consult) #1,React
+Frontend (Consult) #1,JavaScript Frameworks
+Frontend (Consult) #1,Frontend Engineering
+Fullstack (EdTech) #1,TypeScript
+Fullstack (EdTech) #1,Software Development
+Fullstack (EdTech) #1,Software Engineer
+Fullstack (EdTech) #1,React
+Fullstack (EdTech) #1,Content Management System (CMS)
+Fullstack (EdTech) #1,Learning Management System (LMS)
+Fullstack (EdTech) #1,Kubernetes
+Fullstack (EdTech) #1,Containerization
+Fullstack (EdTech) #1,Security Principles
+Fullstack (EdTech) #1,Web Development
+Fullstack (EdTech) #1,Information Technology
+Fullstack (EdTech) #1,Computer Science
+Fullstack (EdTech) #1,Web Performance Optimization
+Fullstack (EdTech) #1,CI/CD Pipeline
+Fullstack (EdTech) #1,Docker
+Fullstack (EdTech) #1,Git
+Fullstack (EdTech) #1,Version Control Systems
+Fullstack (EdTech) #1,MongoDB
+Fullstack (EdTech) #1,NoSQL Databases
+Fullstack (EdTech) #1,Relational Databases
+Fullstack (EdTech) #1,SQL
+Fullstack (EdTech) #1,Databases
+Fullstack (EdTech) #1,PostgreSQL
+Fullstack (EdTech) #1,MySQL
+Fullstack (EdTech) #1,REST API
+Fullstack (EdTech) #1,NestJS
+Fullstack (EdTech) #1,Next.js
+Fullstack (EdTech) #1,Node.js
+Fullstack (EdTech) #1,React Native
+Fullstack (EdTech) #1,JavaScript
+Fullstack (EdTech) #1,CSS
+Fullstack (EdTech) #1,HTML
+Fullstack (EdTech) #1,Web Applications
+Fullstack (EdTech) #1,Full Stack Software Engineer
+Fullstack (Insurance) #1,Internship
+Fullstack (Insurance) #1,Technical Document
+Fullstack (Insurance) #1,Openshift
+Fullstack (Insurance) #1,Jenkins
+Fullstack (Insurance) #1,DevSecOps
+Fullstack (Insurance) #1,NodeJS
+Fullstack (Insurance) #1,Kotlin
+Fullstack (Insurance) #1,Backend
+Fullstack (Insurance) #1,ReactJS
+Fullstack (Insurance) #1,Frontend
+Fullstack (Insurance) #1,Full Stack Developer
+Fullstack (Insurance) #1,Software Development
+Backend (Bank) #1,Windows
+Backend (Bank) #1,Unix
+Backend (Bank) #1,Linux
+Backend (Bank) #1,PL/SQL
+Backend (Bank) #1,Oracle
+Backend (Bank) #1,DB2
+Backend (Bank) #1,UML
+Backend (Bank) #1,Websphere
+Backend (Bank) #1,JBOSS
+Backend (Bank) #1,JSP
+Backend (Bank) #1,Servlet
+Backend (Bank) #1,J2EE
+Backend (Bank) #1,J2SE
+Backend (Bank) #1,Struts
+Backend (Bank) #1,Spring
+Backend (Bank) #1,Hibernate
+Backend (Bank) #1,JBuilder
+Backend (Bank) #1,Netbean
+Backend (Bank) #1,Eclipse
+Backend (Bank) #1,JQuery
+Backend (Bank) #1,AJAX
+Backend (Bank) #1,Javascript
+Backend (Bank) #1,Banking Business
+Backend (Bank) #1,IT Industry
+Backend (Bank) #1,Java Developer
+Backend (Bank) #1,Object-Oriented Programming
+Backend (Bank) #1,Object-Oriented Design
+Backend (Bank) #1,Software Development Life Cycle
+Backend (Bank) #1,System Analysis
+Backend (Bank) #1,Java
+Backend (Bank) #2,CSS
+Backend (Bank) #2,HTML5
+Backend (Bank) #2,Android
+Backend (Bank) #2,iOS
+Backend (Bank) #2,Web Development
+Backend (Bank) #2,Mobile Development
+Backend (Bank) #2,Git
+Backend (Bank) #2,CI/CD
+Backend (Bank) #2,MongoDB
+Backend (Bank) #2,MySQL
+Backend (Bank) #2,NoSQL Database
+Backend (Bank) #2,SQL
+Backend (Bank) #2,Spring Cloud
+Backend (Bank) #2,Spring Boot
+Backend (Bank) #2,Spring Framework
+Backend (Bank) #2,JSON
+Backend (Bank) #2,XML
+Backend (Bank) #2,SOAP
+Backend (Bank) #2,REST
+Backend (Bank) #2,Web Service
+Backend (Bank) #2,Java
+Backend (Bank) #2,Technical Lead
+Backend (Bank) #2,Software Development Team Management
+Backend (Bank) #2,Industry Best Practices
+Backend (Bank) #2,Reusable Code
+Backend (Bank) #2,Reusable Tools
+Backend (Bank) #2,Estimation
+Backend (Bank) #2,Application Designer
+Backend (Bank) #2,Product Owner
+Backend (Bank) #2,Incident Investigation
+Backend (Bank) #2,Integration
+Backend (Bank) #2,Software Development
+Backend (Bank) #2,Software Quality
+PM (MedTech) #1,Collaboration
+PM (MedTech) #1,Communication
+PM (MedTech) #1,Requirements Management
+PM (MedTech) #1,Project Methodologies
+PM (MedTech) #1,Business Objectives Alignment
+PM (MedTech) #1,Project Lifecycle
+PM (MedTech) #1,Maintenance Agreement (MA)
+PM (MedTech) #1,HIS (Hospital Information System) Implementation
+PM (MedTech) #1,Training
+PM (MedTech) #1,Resource Allocation
+PM (MedTech) #1,Customer Relationship Management
+PM (MedTech) #1,Stakeholder Communication
+PM (MedTech) #1,Quality Assurance
+PM (MedTech) #1,Team Management
+PM (MedTech) #1,Contract Management
+PM (MedTech) #1,Budget Management
+PM (MedTech) #1,Project Scheduling
+PM (MedTech) #1,Project Planning
+PM (MedTech) #1,Risk Management
+PM (MedTech) #1,Change Management
+PM (MedTech) #1,Deliverables Management
+PM (MedTech) #1,Project Scope Definition
+PM (MedTech) #1,Healthcare Systems
+PM (MedTech) #1,Technology
+PM (MedTech) #1,IT
+PM (MedTech) #1,Program Management
+PM (MedTech) #1,Project Management Officer (PMO)
+PM (MedTech) #1,Project Management
+Fullstack (MedTech) #1,JavaScript
+Fullstack (MedTech) #1,DevOps
+Fullstack (MedTech) #1,Programming Language
+Fullstack (MedTech) #1,Data Standards
+Fullstack (MedTech) #1,Observability
+Fullstack (MedTech) #1,Search Engine
+Fullstack (MedTech) #1,Message Queue
+Fullstack (MedTech) #1,Cache Database
+Fullstack (MedTech) #1,Database Management System
+Fullstack (MedTech) #1,Container Orchestration
+Fullstack (MedTech) #1,Containerization
+Fullstack (MedTech) #1,Software Testing
+Fullstack (MedTech) #1,JavaScript Framework
+Fullstack (MedTech) #1,Performance
+Fullstack (MedTech) #1,Security
+Fullstack (MedTech) #1,Product Quality
+Fullstack (MedTech) #1,Code Review
+Fullstack (MedTech) #1,Mentorship
+Fullstack (MedTech) #1,Software Engineering
+Fullstack (MedTech) #1,Web Development
+Fullstack (MedTech) #1,Gateway Middleware
+Fullstack (MedTech) #1,Security Test
+Fullstack (MedTech) #1,Performance Test
+Fullstack (MedTech) #1,E2E Test
+Fullstack (MedTech) #1,Integration Test
+Fullstack (MedTech) #1,Unit Test
+Fullstack (MedTech) #1,Continuous Integration
+Fullstack (MedTech) #1,Database Design
+Fullstack (MedTech) #1,Healthcare Systems
+Fullstack (MedTech) #1,FHIR
+Fullstack (MedTech) #1,OpenEHR
+Fullstack (MedTech) #1,OpenTelemetry
+Fullstack (MedTech) #1,OpenSearch
+Fullstack (MedTech) #1,Kafka
+Fullstack (MedTech) #1,Redis
+Fullstack (MedTech) #1,Postgres
+Fullstack (MedTech) #1,k6
+Fullstack (MedTech) #1,Kubernetes
+Fullstack (MedTech) #1,Docker
+Fullstack (MedTech) #1,Github Actions
+Fullstack (MedTech) #1,Angular
+Fullstack (MedTech) #1,Python
+Fullstack (MedTech) #1,TypeScript
+Fullstack (MedTech) #1,React.JS
+Fullstack (MedTech) #1,Nest.JS
+Fullstack (MedTech) #1,Full Stack Engineer
