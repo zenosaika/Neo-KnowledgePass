@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Pass - Job Skill Gap Alignment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <style>
+        /* Base styles */
+        body { background-color: #111; color: #eee; font-family: sans-serif; overflow-x: hidden; margin: 0; min-height: 100vh; }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .content-container { position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 20px 20px 40px 20px; z-index: 1; box-sizing: border-box; }
+        .section-container { background-color: rgba(31, 41, 55, 0.75); padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem; width: 100%; max-width: 700px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease-in-out; }
+        .tag-area { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; min-height: 30px; padding: 0.5rem; background-color: rgba(17, 24, 39, 0.5); border-radius: 8px; }
+        .tag { background-color: #0ea5e9; color: white; padding: 0.5rem 1rem; border-radius: 9999px; cursor: pointer; font-size: 0.875rem; font-weight: 500; transition: background-color 0.2s ease-in-out, transform 0.1s ease, box-shadow 0.2s ease-in-out; border: 1px solid transparent; user-select: none; display: inline-flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        .tag:hover { background-color: #ef4444; transform: translateY(-1px) scale(1.02); box-shadow: 0 4px 8px rgba(0,0,0,0.4); }
+        .tag .remove-icon { margin-left: 0.5rem; font-weight: bold; font-size: 0.9rem; line-height: 1; }
+        .search-area { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; }
+        #job-search-input { flex-grow: 1; padding: 0.7rem 0.9rem; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.2); background-color: rgba(55, 65, 81, 0.9); color: #eee; font-size: 1rem; outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+        #job-search-input:focus { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.5); }
+        #add-job-button { padding: 0.7rem 1.2rem; background-color: #0ea5e9; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background-color 0.2s ease-in-out, transform 0.1s ease; white-space: nowrap; }
+        #add-job-button:hover { background-color: #0284c7; transform: scale(1.03); }
+        #add-job-button:active { transform: scale(0.98); }
+        .file-input-container { text-align: center; }
+        #jd-upload { color: #cbd5e1; font-size: 0.875rem; display: block; margin-left: auto; margin-right: auto; max-width: max-content; margin-top: 0.5rem; }
+        #jd-upload::file-selector-button { background-color: #10b981; color: white; padding: 0.6rem 1rem; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.2s ease-in-out; margin-right: 1rem; font-weight: 500; }
+        #jd-upload::file-selector-button:hover { background-color: #059669; }
+        .error-message { color: #f87171; margin-top: 1rem; text-align: center; font-weight: 600; min-height: 1.5rem; transition: opacity 0.3s ease; opacity: 1; }
+        .error-message.hidden { opacity: 0; }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar sticky top-0 z-20 w-full bg-gray-900/80 backdrop-blur-md shadow-md mb-3">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="/" class="text-white font-bold text-xl hover:text-indigo-300 transition duration-200">
+                        Knowledge Pass
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/" class="text-gray-300 hover:bg-gray-700/50 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200">Job Recommend</a>
+                        <a href="/learning_path_home" class="text-gray-300 hover:bg-gray-700/50 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200">Learning Path</a>
+                        <a href="/graph_rag_home" class="bg-indigo-600/80 text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Gap Alignment</a>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" class="bg-gray-800 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="/" class="bg-indigo-600/80 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Home</a>
+                <a href="/learning_path_home" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Learning Path</a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="particles-js"></div>
+
+    <div class="content-container">
+
+        <h1 class="text-5xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-cyan-400 to-emerald-500 animate-pulse pb-3">Job Skill Gap Alignment</h1>
+        <p class="text-xl text-gray-300 mb-10 text-center max-w-3xl">Managers: Select the target job role(s) and optionally upload the corresponding Job Description for a more detailed analysis. We'll identify key skills and align them to relevant courses to help bridge potential gaps.</p>
+
+        <form id="job-alignment-form" method="POST" action="/graph_rag/" enctype="multipart/form-data" class="w-full flex flex-col items-center">
+            {% csrf_token %} <div class="section-container w-full max-w-xl">
+                <label for="job-search-input" class="text-2xl font-semibold text-gray-100">Target Job Role(s)</label>
+                <p class="text-sm text-gray-400 mt-1 mb-3">Enter the job title(s) you want to analyze.</p>
+                <div class="search-area">
+                     <input type="text" id="job-search-input" list="job-suggestions" placeholder="e.g., Senior Software Engineer, Project Manager...">
+                     <datalist id="job-suggestions"> </datalist>
+                     <button type="button" id="add-job-button">Add Job Role</button>
+                 </div>
+                 <div id="job-input-error" class="error-message hidden text-sm mt-2 text-left"></div>
+                 <div class="tag-area" id="jobs-tag-area"> </div>
+            </div>
+
+            <div class="section-container file-input-container w-full max-w-xl">
+                <label for="jd-upload" class="block text-xl font-semibold text-gray-100 mb-2">Upload Job Description (Optional)</label>
+                <p class="text-xs text-gray-400 mb-3">Provides more context for a detailed skill analysis.</p>
+                <input type="file" id="jd-upload" name="job_description_file" accept=".pdf,.doc,.docx,.txt" class="block w-full cursor-pointer focus:outline-none">
+                <p class="text-xs text-gray-400 mt-2">Accepted formats: PDF, DOC, DOCX, TXT</p>
+            </div>
+
+            <div id="hidden-inputs"></div>
+
+            <div id="form-error" class="error-message hidden"></div>
+
+            <button type="submit" id="analyze-button"
+                class="mt-6 px-10 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xl font-bold rounded-lg shadow-lg hover:from-cyan-600 hover:to-blue-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-cyan-400">
+                Analyze Job & Align Skills
+            </button>
+
+        </form>
+
+        </div>
+
+    <script>
+        // --- Particles.js Initialization ---
+        particlesJS('particles-js', { /* ... Full Particle config object ... */
+            "particles": { "number": { "value": 250, "density": { "enable": true, "value_area": 900 } }, "color": { "value": ["#ff6b6b", "#4ecdc4", "#ffe66d", "#81ecec", "#6c5ce7"] }, "shape": { "type": "circle", "stroke": { "width": 1, "color": "#222" }, "polygon": { "nb_sides": 5 } }, "opacity": { "value": 0.8, "random": true, "anim": { "enable": true, "speed": 0.5, "opacity_min": 0.3, "sync": false } }, "size": { "value": 8, "random": true, "anim": { "enable": true, "speed": 2, "size_min": 1, "sync": false } }, "line_linked": { "enable": true, "distance": 130, "color": "#aaa", "opacity": 0.3, "width": 1 }, "move": { "enable": true, "speed": 2, "direction": "none", "random": true, "straight": false, "out_mode": "out", "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 } } }, "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "bubble": { "distance": 250, "size": 120, "duration": 0.6 }, "repulse": { "distance": 250, "duration": 0.6 }, "push": { "particles_nb": 6 }, "remove": { "particles_nb": 3 } } }, "retina_detect": true
+        });
+
+        // --- Sample Job Role Data ---
+        const sampleJobs = [ 'Backend (Travel) #1', 'Backend (FinTech) #2', 'Backend (Travel) #2', 'Infra (Travel) #1', 'QA (MedTech) #1', 'Fullstack (FinTech) #2', 'Fullstack (Bank) #1', 'Fullstack (FinTech) #1', 'Fullstack (Bank) #2', 'QA (FinTech) #1', 'Frontend (Consult) #1', 'Fullstack (EdTech) #1', 'Fullstack (Insurance) #1', 'Backend (Bank) #1', 'Backend (Bank) #2', 'PM (MedTech) #1', 'Fullstack (MedTech) #1' ];
+
+        // --- State Variables ---
+        const selectedJobs = new Set();
+
+        // --- DOM Element References ---
+        const jobSearchInput = document.getElementById('job-search-input');
+        const jobSuggestionsList = document.getElementById('job-suggestions');
+        const addJobButton = document.getElementById('add-job-button');
+        const jobsTagArea = document.getElementById('jobs-tag-area');
+        const jobAlignmentForm = document.getElementById('job-alignment-form');
+        const analyzeButton = document.getElementById('analyze-button'); // Keep reference if needed for other UI, but not submission logic
+        const jdUploadInput = document.getElementById('jd-upload'); // Keep reference if needed for other UI
+        const hiddenInputsContainer = document.getElementById('hidden-inputs');
+        const formErrorDiv = document.getElementById('form-error');
+        const jobInputErrorDiv = document.getElementById('job-input-error');
+        // ### REMOVED result area references ###
+
+        // --- Core Functions ---
+
+        function createJobTagElement(jobText) {
+            const tag = document.createElement('span');
+            tag.classList.add('tag');
+            tag.dataset.value = jobText;
+            const textNode = document.createTextNode(jobText + ' ');
+            const removeSpan = document.createElement('span');
+            removeSpan.classList.add('remove-icon');
+            removeSpan.innerHTML = '&times;';
+            removeSpan.setAttribute('aria-label', 'Remove job role');
+            tag.appendChild(textNode);
+            tag.appendChild(removeSpan);
+            tag.addEventListener('click', () => {
+                selectedJobs.delete(jobText);
+                tag.remove();
+                updateHiddenInputs();
+                // Clear errors when tag is removed, in case it fixes validation
+                jobInputErrorDiv.classList.add('hidden');
+                formErrorDiv.classList.add('hidden');
+                console.log("Removed job:", jobText, "Remaining:", Array.from(selectedJobs));
+            });
+            return tag;
+        }
+
+        function populateJobSuggestions() {
+            jobSuggestionsList.innerHTML = '';
+            sampleJobs.forEach(job => {
+                const option = document.createElement('option');
+                option.value = job;
+                jobSuggestionsList.appendChild(option);
+            });
+         }
+
+        function handleAddJob() {
+             const jobValue = jobSearchInput.value.trim();
+             jobInputErrorDiv.textContent = ''; // Clear previous error
+             jobInputErrorDiv.classList.add('hidden');
+             if (!jobValue) {
+                 jobInputErrorDiv.textContent = "Please enter a job role.";
+                 jobInputErrorDiv.classList.remove('hidden');
+                 return;
+             }
+             if (selectedJobs.has(jobValue)) {
+                 jobInputErrorDiv.textContent = `"${jobValue}" has already been added.`;
+                 jobInputErrorDiv.classList.remove('hidden');
+                 jobSearchInput.value = '';
+                 return;
+             }
+             selectedJobs.add(jobValue);
+             const tagElement = createJobTagElement(jobValue);
+             jobsTagArea.appendChild(tagElement);
+             updateHiddenInputs();
+             jobSearchInput.value = '';
+             // Clear potential general form error when a job is successfully added
+             formErrorDiv.classList.add('hidden');
+             console.log("Added job:", jobValue, "Current selection:", Array.from(selectedJobs));
+         }
+
+        function updateHiddenInputs() {
+             hiddenInputsContainer.innerHTML = '';
+             selectedJobs.forEach(job => {
+                 const input = document.createElement('input');
+                 input.type = 'hidden';
+                 input.name = 'selected_jobs'; // Backend will receive these
+                 input.value = job;
+                 hiddenInputsContainer.appendChild(input);
+             });
+             console.log("Hidden job inputs updated.");
+         }
+
+        // ### REMOVED displayAlignmentResults function ###
+
+        // ### REMOVED handleSubmit async function ###
+
+        // --- Event Listeners ---
+        addJobButton.addEventListener('click', handleAddJob);
+
+        jobSearchInput.addEventListener('keypress', function(event) {
+             if (event.key === 'Enter') {
+                 event.preventDefault(); // Prevent form submission on Enter in this input
+                 handleAddJob();
+             }
+         });
+
+        // ### NEW: Simplified Submit Listener for Validation Only ###
+        jobAlignmentForm.addEventListener('submit', function(event) {
+            console.log("Form submit event triggered.");
+            // Clear previous errors before validation
+            jobInputErrorDiv.classList.add('hidden');
+            formErrorDiv.classList.add('hidden');
+
+            // Validation: Check if at least one job role is selected
+            if (selectedJobs.size === 0) {
+                console.error("Form submission prevented: No job roles selected.");
+                jobInputErrorDiv.textContent = "Please add at least one target job role before submitting.";
+                jobInputErrorDiv.classList.remove('hidden');
+                jobInputErrorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                event.preventDefault(); // Prevent the actual form submission
+            } else {
+                console.log("Validation passed. Proceeding with form submission to /graph_rag/");
+                // If valid, do nothing - the form will submit naturally
+            }
+        });
+
+
+        // --- Initialization Code ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateJobSuggestions();
+
+             // --- Navbar Mobile Menu Toggle ---
+             const mobileMenuButton = document.querySelector('nav button[aria-controls="mobile-menu"]');
+             const mobileMenu = document.getElementById('mobile-menu');
+             const openIcon = mobileMenuButton?.querySelector('svg.block');
+             const closeIcon = mobileMenuButton?.querySelector('svg.hidden');
+             if (mobileMenuButton && mobileMenu && openIcon && closeIcon) {
+                 mobileMenuButton.addEventListener('click', () => {
+                     const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+                     mobileMenuButton.setAttribute('aria-expanded', String(!isExpanded));
+                     mobileMenu.classList.toggle('hidden');
+                     openIcon.classList.toggle('hidden');
+                     closeIcon.classList.toggle('hidden');
+                 });
+             }
+
+            console.log("Job Skill Gap Alignment page initialized for standard POST submission.");
+        });
+
+    </script>
+
+</body>
+</html>

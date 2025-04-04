@@ -175,3 +175,19 @@ def node_to_text():
         results[k] = result
 
     return results
+
+
+def get_ck():
+    queries = {
+        'include': (
+                "MATCH (c:Course)-[:include]->(s:Skill) "
+                "RETURN c, s"
+            )
+    }
+
+    results = {}
+    for k, query in queries.items():
+        result = execute_read_query(query)
+        results[k] = result
+
+    return results

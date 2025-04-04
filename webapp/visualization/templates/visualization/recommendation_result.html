@@ -347,6 +347,7 @@
                     <div class="ml-10 flex items-baseline space-x-4">
                         <a href="/" class="bg-indigo-600/80 text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Job Recommend</a>
                         <a href="/learning_path_home" class="text-gray-300 hover:bg-gray-700/50 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200">Learning Path</a>
+                        <a href="/graph_rag_home" class="text-gray-300 hover:bg-gray-700/50 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-200">Gap Alignment</a>
                     </div>
                 </div>
                 <div class="-mr-2 flex md:hidden">
@@ -385,7 +386,7 @@
                      <div class="rank-badge"><span>{{ internship.rank }}</span></div>
                      <h3 class="internship-title">{{ internship.title|default:"N/A" }}</h3>
                      <p class="company-name">{{ internship.company|default:"Company Info Unavailable" }}</p>
-                     <div class="score-display">Match Score: <strong>{{ internship.score|floatformat:0|default:"--" }}</strong></div>
+                     <div class="score-display">% Fulfillment : <strong>{{ internship.score|floatformat:0|default:"--" }}</strong></div>
                  </div>
              {% endfor %}
         </div>

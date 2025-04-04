@@ -49,6 +49,11 @@ def recommendation_result(request):
             courses = request.POST.getlist('courses')
             skills = request.POST.getlist('skills')
 
+            if len(courses) == 0:
+                courses = [""]
+            if len(skills) == 0:
+                skills = [""]
+
             # Use request.FILES.get to safely access the optional file
             resume_file = request.FILES.get('resume_file') # Name matches the HTML input name
 
